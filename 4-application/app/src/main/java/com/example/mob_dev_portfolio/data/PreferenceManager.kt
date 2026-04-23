@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +19,21 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class PreferenceManager(private val context: Context) {
 
     private val LAST_UPDATED_KEY = longPreferencesKey("last_updated")
+    private val THEME_KEY = intPreferencesKey("theme_selection")
+
+    /**
+     * Theme selection: 0 = Auto/System, 1 = Light, 2 = Dark, 3 = Noctua Brown
+     */
+    val themeSelection: Flow<Int> = context.dataStore.data
+        .map { preferences ->
+            preferences[THEME_KEY] ?: 0
+        }
+
+    suspend fun saveThemeSelection(theme: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[THEME_KEY] = theme
+        }
+    }
 
     /**
      * Get the last updated timestamp.

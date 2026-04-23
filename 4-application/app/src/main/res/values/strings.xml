@@ -2,4 +2,8 @@
     <string name="app_name">Anime Tracker</string>
     <string name="anime_cover_image">Anime cover image</string>
     <string name="last_updated_label">Last Updated: %1$s</string>
+    <string name="theme_light">Light Mode</string>
+    <string name="theme_dark">Dark Mode</string>
+    <string name="theme_brown">Noctua Brown</string>
+    <string name="theme_auto">System Default</string>
 </resources>

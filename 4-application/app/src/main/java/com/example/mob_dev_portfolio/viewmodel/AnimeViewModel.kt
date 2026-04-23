@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 class AnimeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: AnimeRepository
+    private val preferenceManager: PreferenceManager
     
     // Internal mutable list for search results/seasonal anime
     private val _animeList = MutableLiveData<List<Anime>>()
@@ -31,18 +32,28 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
 
     // LiveData for last updated time, automatically updated from DataStore Flow
     val lastUpdated: LiveData<Long>
+    
+    // LiveData for theme selection
+    val themeSelection: LiveData<Int>
 
     init {
         val database = AppDatabase.getDatabase(application)
         val apiService = JikanApiService.create()
-        val preferenceManager = PreferenceManager(application)
+        preferenceManager = PreferenceManager(application)
         
         repository = AnimeRepository(apiService, database.animeDao(), preferenceManager)
         
         favorites = repository.favorites.asLiveData()
         lastUpdated = repository.lastUpdated.asLiveData()
+        themeSelection = preferenceManager.themeSelection.asLiveData()
 
         fetchSeasonalAnime()
+    }
+
+    fun setTheme(theme: Int) {
+        viewModelScope.launch {
+            preferenceManager.saveThemeSelection(theme)
+        }
     }
 
     fun fetchSeasonalAnime() {

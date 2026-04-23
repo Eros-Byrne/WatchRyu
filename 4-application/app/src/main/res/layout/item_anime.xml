@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Using a CardView to create a "panel" look as requested.
+     The layout expands when clicked to show more info. -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:layout_margin="10dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:padding="12dp">
 
+        <!-- Cover art on the left side -->
         <ImageView
             android:id="@+id/animeImage"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
+            android:layout_width="110dp"
+            android:layout_height="160dp"
             android:scaleType="centerCrop"
             android:contentDescription="@string/anime_cover_image"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />
 
+        <!-- Basic info on the right side -->
         <TextView
             android:id="@+id/animeTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="12dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/animeImage"
@@ -39,18 +42,46 @@
             tools:text="Anime Title" />
 
         <TextView
-            android:id="@+id/animeSynopsis"
+            android:id="@+id/clickToExpand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tap for more details..."
+            android:textSize="12sp"
+            android:alpha="0.6"
+            app:layout_constraintBottom_toBottomOf="@id/animeImage"
+            app:layout_constraintStart_toStartOf="@id/animeTitle" />
+
+        <!-- The "More Details" section that toggles visibility -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/detailSection"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:maxLines="5"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/animeImage"
-            app:layout_constraintTop_toBottomOf="@id/animeTitle"
-            tools:text="This is a long synopsis of the anime..." />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/animeImage"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/animeSynopsis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="This is where the full synopsis goes when you expand the panel." />
+
+            <Button
+                android:id="@+id/wikiButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Open Wiki"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/animeSynopsis" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
