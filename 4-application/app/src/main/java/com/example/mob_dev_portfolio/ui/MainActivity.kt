@@ -17,6 +17,9 @@ class MainActivity : AppCompatActivity() {
     // ViewBinding instance
     private lateinit var binding: ActivityMainBinding
     
+    // Adapter instance
+    private lateinit var adapter: AnimeAdapter
+    
     // ViewModel initialization using the 'by viewModels()' delegate
     // This ensures the ViewModel is scoped to this Activity and survives rotation.
     private val viewModel: AnimeViewModel by viewModels()
@@ -33,10 +36,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
+        adapter = AnimeAdapter { anime ->
+            viewModel.toggleFavorite(anime)
+        }
+        
         // Setting up RecyclerView with a LinearLayoutManager
         binding.animeRecyclerView.layoutManager = LinearLayoutManager(this)
-        
-        // TODO: Attach the custom adapter here once implemented
+        binding.animeRecyclerView.adapter = adapter
     }
 
     private fun observeViewModel() {
@@ -47,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.animeList.observe(this) { animeList ->
             binding.progressBar.visibility = View.GONE
             // Update the adapter with the new list
-            // TODO: Update adapter here
+            adapter.submitList(animeList)
         }
     }
 }

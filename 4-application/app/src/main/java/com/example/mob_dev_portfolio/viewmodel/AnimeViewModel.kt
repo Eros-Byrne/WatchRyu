@@ -1,40 +1,65 @@
 package com.example.mob_dev_portfolio.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.mob_dev_portfolio.data.AnimeRepository
+import com.example.mob_dev_portfolio.data.AppDatabase
+import com.example.mob_dev_portfolio.data.JikanApiService
+import com.example.mob_dev_portfolio.data.PreferenceManager
 import com.example.mob_dev_portfolio.model.Anime
 import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the Anime Tracker.
  * This class survives configuration changes like screen rotations, ensuring the UI state is preserved.
- * Following the MVVM pattern as recommended by MAD guidelines.
+ * Using AndroidViewModel to access Application context for repository initialization.
  */
-class AnimeViewModel : ViewModel() {
+class AnimeViewModel(application: Application) : AndroidViewModel(application) {
 
-    // Internal mutable list to handle updates
-    private val _animeList = MutableLiveData<List<Anime>>()
+    private val repository: AnimeRepository
     
-    // External immutable LiveData for the UI to observe
+    // Internal mutable list for search results/seasonal anime
+    private val _animeList = MutableLiveData<List<Anime>>()
     val animeList: LiveData<List<Anime>> get() = _animeList
 
+    // LiveData for favorites, automatically updated from Room Flow
+    val favorites: LiveData<List<Anime>>
+
+    // LiveData for last updated time, automatically updated from DataStore Flow
+    val lastUpdated: LiveData<Long>
+
     init {
-        // Initial data fetch simulation
-        loadInitialData()
+        val database = AppDatabase.getDatabase(application)
+        val apiService = JikanApiService.create()
+        val preferenceManager = PreferenceManager(application)
+        
+        repository = AnimeRepository(apiService, database.animeDao(), preferenceManager)
+        
+        favorites = repository.favorites.asLiveData()
+        lastUpdated = repository.lastUpdated.asLiveData()
+
+        fetchSeasonalAnime()
     }
 
-    private fun loadInitialData() {
+    fun fetchSeasonalAnime() {
         viewModelScope.launch {
-            // Simulated data for initial testing on Pixel 3a API 35
-            // In a real scenario, this would come from Retrofit or Room
-            val mockData = listOf(
-                Anime(1, "Naruto", "https://cdn.myanimelist.net/images/anime/13/17405.jpg", "A young ninja who seeks recognition..."),
-                Anime(2, "One Piece", "https://cdn.myanimelist.net/images/anime/1244/138851.jpg", "Monkey D. Luffy refuses to let anyone or anything stand in the way of his quest..."),
-                Anime(3, "Bleach", "https://cdn.myanimelist.net/images/anime/1764/126627.jpg", "Ichigo Kurosaki is an ordinary high schooler—until his family is attacked by a Hollow...")
-            )
-            _animeList.value = mockData
+            try {
+                val list = repository.fetchSeasonalAnime()
+                _animeList.postValue(list)
+            } catch (e: Exception) {
+                // Handle error (e.g., no internet)
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun toggleFavorite(anime: Anime) {
+        viewModelScope.launch {
+            repository.toggleFavorite(anime)
         }
     }
 }
