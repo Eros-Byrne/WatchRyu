@@ -27,7 +27,7 @@ class AnimeAdapter(
         holder.bind(getItem(position))
     }
 
-    inner class AnimeViewHolder(private val binding: ItemAnimeBinding) : RecyclerView.ViewHolder(binding.root) {
+    class AnimeViewHolder(private val binding: ItemAnimeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(anime: Anime) {
             binding.animeTitle.text = anime.title
             binding.animeSynopsis.text = anime.synopsis
@@ -35,12 +35,7 @@ class AnimeAdapter(
             // Loading image using Coil (Modern library for Android)
             binding.animeImage.load(anime.imageUrl) {
                 crossfade(true)
-                // placeholder(R.drawable.placeholder)
             }
-
-            // Handle favorite button
-            // binding.favoriteButton.setImageResource(if (anime.isFavorite) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
-            // binding.favoriteButton.setOnClickListener { onFavoriteClick(anime) }
         }
     }
 
