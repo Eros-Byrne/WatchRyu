@@ -28,7 +28,7 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     private val _animeList = MutableLiveData<List<Anime>>()
     val animeList: LiveData<List<Anime>> get() = _animeList
 
-    // LiveData for favorites, automatically updated from Room Flow
+    // LiveData for all anime in user's list (for stats)
     val favorites: LiveData<List<Anime>>
 
     // LiveData for last updated time, automatically updated from DataStore Flow
@@ -52,7 +52,7 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
         
         repository = AnimeRepository(apiService, database.animeDao(), preferenceManager)
         
-        favorites = repository.favorites.asLiveData()
+        favorites = repository.allAnime.asLiveData()
         lastUpdated = repository.lastUpdated.asLiveData()
         themeSelection = preferenceManager.themeSelection.asLiveData()
 
@@ -77,9 +77,15 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun toggleFavorite(anime: Anime) {
+    fun updateAnimeInList(anime: Anime) {
         viewModelScope.launch {
-            repository.toggleFavorite(anime)
+            repository.updateAnimeInList(anime)
+        }
+    }
+
+    fun deleteAnimeFromList(anime: Anime) {
+        viewModelScope.launch {
+            repository.deleteAnimeFromList(anime)
         }
     }
 }

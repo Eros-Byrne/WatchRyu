@@ -1,29 +1,25 @@
 package com.example.mob_dev_portfolio.ui
 
 import android.os.Bundle
-import android.view.View
 import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mob_dev_portfolio.R
 import com.example.mob_dev_portfolio.databinding.ActivityMainBinding
 import com.example.mob_dev_portfolio.viewmodel.AnimeViewModel
+import com.google.android.material.tabs.TabLayoutMediator
 
 /**
- * MainActivity for the Anime Tracker app.
- * I implemented a theme switcher and a panel-based UI for the anime list.
+ * Main Activity that sets up the Tab Navigation and Pager.
  */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: AnimeAdapter
     private val viewModel: AnimeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // We need to check the theme before calling super.onCreate or setContentView.
-        // I use the ViewModel to observe the theme stored in DataStore.
+        // Theme observation must happen early
         viewModel.themeSelection.observe(this) { themeId ->
             applyTheme(themeId)
         }
@@ -33,24 +29,27 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupRecyclerView()
+        setupNavigation()
         setupThemeToggle()
-        observeViewModel()
-    }
-
-    private fun setupRecyclerView() {
-        adapter = AnimeAdapter { anime ->
-            viewModel.toggleFavorite(anime)
-        }
-        
-        binding.animeRecyclerView.layoutManager = LinearLayoutManager(this)
-        binding.animeRecyclerView.adapter = adapter
     }
 
     /**
-     * This method handles the theme switching logic.
-     * I used a PopupMenu to give the user multiple choices.
+     * Sets up TabLayout with ViewPager2. 
+     * I used TabLayoutMediator to link them together.
      */
+    private fun setupNavigation() {
+        val adapter = MainPagerAdapter(this)
+        binding.viewPager.adapter = adapter
+
+        val tabTitles = listOf(
+            "Airing", "Stats", "Watching", "Completed", "Dropped", "Plan"
+        )
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = tabTitles[position]
+        }.attach()
+    }
+
     private fun setupThemeToggle() {
         binding.themeButton.setOnClickListener { view ->
             val popup = PopupMenu(this, view)
@@ -61,7 +60,6 @@ class MainActivity : AppCompatActivity() {
             
             popup.setOnMenuItemClickListener { item ->
                 viewModel.setTheme(item.itemId)
-                // We recreate the activity to apply the new theme immediately.
                 recreate()
                 true
             }
@@ -69,27 +67,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Applies the selected theme using AppCompatDelegate or custom styles.
-     */
     private fun applyTheme(themeId: Int) {
         when (themeId) {
             0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            3 -> {
-                // For the custom brown theme, we set it manually.
-                setTheme(R.style.Theme_Mobdevportfolio_Brown)
-            }
-        }
-    }
-
-    private fun observeViewModel() {
-        binding.progressBar.visibility = View.VISIBLE
-
-        viewModel.animeList.observe(this) { animeList ->
-            binding.progressBar.visibility = View.GONE
-            adapter.submitList(animeList)
+            3 -> setTheme(R.style.Theme_Mobdevportfolio_Brown)
         }
     }
 }
