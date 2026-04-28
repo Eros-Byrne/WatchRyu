@@ -6,52 +6,53 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <!-- Top Bar for controls -->
-    <LinearLayout
-        android:id="@+id/topBar"
+    <!-- Top Bar with title and theme toggle -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/app_name"
-            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/themeButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Change Theme"
-            android:src="@android:drawable/ic_menu_manage" />
+            android:contentDescription="Toggle Theme"
+            android:src="@android:drawable/ic_menu_manage"
+            app:tint="@color/white" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/animeRecyclerView"
+    <!-- Tab Layout for navigation -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="?attr/colorSecondary"
+        app:tabTextColor="?attr/android:textColorSecondary" />
+
+    <!-- ViewPager for fragment switching -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
-        tools:listitem="@layout/item_anime" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tabLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

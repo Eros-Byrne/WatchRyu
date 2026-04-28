@@ -11,6 +11,7 @@ import com.example.mob_dev_portfolio.data.AppDatabase
 import com.example.mob_dev_portfolio.data.JikanApiService
 import com.example.mob_dev_portfolio.data.PreferenceManager
 import com.example.mob_dev_portfolio.model.Anime
+import com.example.mob_dev_portfolio.model.AnimeStatus
 import kotlinx.coroutines.launch
 
 /**
@@ -35,6 +36,14 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     
     // LiveData for theme selection
     val themeSelection: LiveData<Int>
+
+    /**
+     * Get specific anime list based on status.
+     * We use asLiveData() on the Flow from the repository.
+     */
+    fun getAnimeByStatus(status: AnimeStatus): LiveData<List<Anime>> {
+        return repository.getAnimeByStatus(status).asLiveData()
+    }
 
     init {
         val database = AppDatabase.getDatabase(application)
