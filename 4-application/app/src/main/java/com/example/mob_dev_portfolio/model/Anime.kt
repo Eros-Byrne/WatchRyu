@@ -9,7 +9,10 @@ data class Anime(
     val title: String,
     val imageUrl: String,
     val synopsis: String = "",
-    val isFavorite: Boolean = false,
+    val episodes: Int = 0,
+    val episodesWatched: Int = 0,
+    val score: Int = 0,
+    val status: AnimeStatus = AnimeStatus.PLAN_TO_WATCH,
     val wikiUrl: String = "https://en.wikipedia.org/wiki/Anime",
-    var isExpanded: Boolean = false // Track if the panel is open or closed
+    var isExpanded: Boolean = false
 )
