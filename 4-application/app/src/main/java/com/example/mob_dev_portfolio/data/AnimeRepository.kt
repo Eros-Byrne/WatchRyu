@@ -1,13 +1,13 @@
 package com.example.mob_dev_portfolio.data
 
 import com.example.mob_dev_portfolio.model.Anime
+import com.example.mob_dev_portfolio.model.AnimeStatus
 import com.example.mob_dev_portfolio.model.toDomainModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
- * Repository class that abstracts access to multiple data sources.
- * It manages the logic for fetching data from the API and storing favorites locally.
+ * Repository class that abstracts access to Jikan API and Room DB.
  */
 class AnimeRepository(
     private val apiService: JikanApiService,
@@ -15,13 +15,22 @@ class AnimeRepository(
     private val preferenceManager: PreferenceManager
 ) {
 
-    // Flow of favorites from the local database
-    val favorites: Flow<List<Anime>> = animeDao.getAllFavorites().map { entities ->
+    // Flow of all anime from the local database
+    val allAnime: Flow<List<Anime>> = animeDao.getAllAnime().map { entities ->
         entities.map { it.toDomainModel() }
     }
 
     // Flow of last updated time from DataStore
     val lastUpdated: Flow<Long> = preferenceManager.lastUpdated
+
+    /**
+     * Get anime filtered by their tracking status (Watching, Completed, etc.)
+     */
+    fun getAnimeByStatus(status: AnimeStatus): Flow<List<Anime>> {
+        return animeDao.getAnimeByStatus(status).map { entities ->
+            entities.map { it.toDomainModel() }
+        }
+    }
 
     /**
      * Fetches seasonal anime from the Jikan API.
@@ -37,13 +46,16 @@ class AnimeRepository(
     }
 
     /**
-     * Toggles the favorite status of an anime.
+     * Add or update an anime in the user's tracking list.
      */
-    suspend fun toggleFavorite(anime: Anime) {
-        if (animeDao.isFavorite(anime.id)) {
-            animeDao.deleteFavorite(anime.toEntity())
-        } else {
-            animeDao.insertFavorite(anime.toEntity())
-        }
+    suspend fun updateAnimeInList(anime: Anime) {
+        animeDao.insertAnime(anime.toEntity())
+    }
+
+    /**
+     * Remove an anime from the list.
+     */
+    suspend fun deleteAnimeFromList(anime: Anime) {
+        animeDao.deleteAnime(anime.toEntity())
     }
 }
