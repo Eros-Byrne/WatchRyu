@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Anime Tracker</string>
+    <string name="app_name">WatchRyu</string>
     <string name="anime_cover_image">Anime cover image</string>
     <string name="last_updated_label">Last Updated: %1$s</string>
     <string name="theme_light">Light Mode</string>

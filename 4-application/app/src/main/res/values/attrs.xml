@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="textSizeSmall" format="dimension" />
+    <attr name="textSizeMedium" format="dimension" />
+    <attr name="textSizeLarge" format="dimension" />
+</resources>
