@@ -9,9 +9,51 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Display Settings"
+        android:text="WatchRyu Settings"
         android:textSize="20sp"
         android:textStyle="bold" />
+
+    <!-- Theme Selection -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="App Theme"
+        android:textSize="16sp" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/themeToggleGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:singleSelection="true"
+        app:selectionRequired="true">
+
+        <Button
+            android:id="@+id/btnThemeLight"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Light" />
+
+        <Button
+            android:id="@+id/btnThemeDark"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Dark" />
+
+        <Button
+            android:id="@+id/btnThemeBrown"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Brown" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <!-- Contrast Toggle -->
     <TextView

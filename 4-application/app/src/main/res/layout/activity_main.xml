@@ -7,7 +7,6 @@
     tools:context=".ui.MainActivity">
 
     <!-- Background Watermark Symbol -->
-    <!-- This reduces the "white space" feel by adding a subtle stylized element -->
     <ImageView
         android:id="@+id/backgroundWatermark"
         android:layout_width="300dp"
@@ -22,8 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="?attr/colorOnSurface" />
 
-    <!-- Minimalist Top Bar -->
-    <!-- Removed the large "Anime Tracker" text for a cleaner, modern look -->
+    <!-- Clean, Unified Top Bar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -31,31 +29,29 @@
         android:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="?attr/textSizeLarge"
+            android:textStyle="bold" />
+
+        <!-- Single Menu Icon for all settings (Theme, Font, Contrast) -->
         <ImageButton
             android:id="@+id/settingsButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="end"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Open Settings"
-            android:src="@android:drawable/ic_menu_preferences"
-            app:tint="?attr/colorOnSurface" />
-
-        <ImageButton
-            android:id="@+id/themeButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/theme_auto"
-            android:src="@android:drawable/ic_menu_manage"
+            android:contentDescription="Menu"
+            android:src="@android:drawable/ic_menu_sort_by_size"
             app:tint="?attr/colorOnSurface" />
 
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Tab Layout - The primary navigation -->
+    <!-- Tab Layout -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
@@ -67,7 +63,7 @@
         app:tabSelectedTextColor="?attr/colorPrimary"
         app:tabTextColor="?attr/android:textColorSecondary" />
 
-    <!-- ViewPager for fragment switching -->
+    <!-- ViewPager -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="0dp"

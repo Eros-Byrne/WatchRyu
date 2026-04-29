@@ -45,7 +45,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="18sp"
+            android:textSize="?attr/textSizeLarge"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/reviewIndicator"
             app:layout_constraintStart_toEndOf="@id/animeImage"
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="14sp"
+            android:textSize="?attr/textSizeMedium"
             app:layout_constraintStart_toStartOf="@id/animeTitle"
             app:layout_constraintTop_toBottomOf="@id/animeTitle"
             tools:text="Progress: 12/24" />
@@ -77,7 +77,7 @@
                 android:id="@+id/personalScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:textSize="?attr/textSizeMedium"
                 android:textColor="?attr/colorPrimary"
                 android:textStyle="bold"
                 tools:text="You: 8" />
@@ -87,6 +87,7 @@
                 android:layout_height="wrap_content"
                 android:text=" | "
                 android:textColor="?attr/colorOnSurface"
+                android:textSize="?attr/textSizeMedium"
                 android:layout_marginHorizontal="4dp" />
 
             <TextView
@@ -94,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"
+                android:textSize="?attr/textSizeMedium"
                 tools:text="MAL: 8.5" />
 
         </LinearLayout>
@@ -106,7 +107,7 @@
             android:alpha="0.6"
             android:text="@string/tap_for_details"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="12sp"
+            android:textSize="?attr/textSizeSmall"
             app:layout_constraintBottom_toBottomOf="@id/animeImage"
             app:layout_constraintStart_toStartOf="@id/animeTitle" />
 
@@ -124,7 +125,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="14sp"
+                android:textSize="?attr/textSizeMedium"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Synopsis text goes here..." />
 
@@ -145,6 +146,7 @@
                     android:gravity="top"
                     android:inputType="textMultiLine"
                     android:textColor="?attr/colorOnSurface"
+                    android:textSize="?attr/textSizeMedium"
                     android:minLines="3" />
 
             </com.google.android.material.textfield.TextInputLayout>

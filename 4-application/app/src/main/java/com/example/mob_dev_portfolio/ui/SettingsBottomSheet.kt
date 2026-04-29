@@ -11,8 +11,8 @@ import com.example.mob_dev_portfolio.viewmodel.AnimeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 /**
- * BottomSheet that allows users to adjust accessibility settings.
- * I used a BottomSheet because it feels more modern than a standard settings activity.
+ * Unified Settings Panel.
+ * I consolidated Theme, Contrast, and Font size here to keep the main UI clean.
  */
 class SettingsBottomSheet : BottomSheetDialogFragment() {
 
@@ -29,7 +29,15 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Observe current settings to check the correct buttons
+        // 1. Initial UI States from DataStore
+        viewModel.themeSelection.observe(viewLifecycleOwner) { theme ->
+            when (theme) {
+                1 -> binding.themeToggleGroup.check(R.id.btnThemeLight)
+                2 -> binding.themeToggleGroup.check(R.id.btnThemeDark)
+                3 -> binding.themeToggleGroup.check(R.id.btnThemeBrown)
+            }
+        }
+
         viewModel.contrastSetting.observe(viewLifecycleOwner) { contrast ->
             if (contrast == 1) {
                 binding.contrastToggleGroup.check(R.id.btnHighContrast)
@@ -46,7 +54,11 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
             }
         }
 
-        // Click listeners to save new settings
+        // 2. Click Listeners
+        binding.btnThemeLight.setOnClickListener { viewModel.setTheme(1) }
+        binding.btnThemeDark.setOnClickListener { viewModel.setTheme(2) }
+        binding.btnThemeBrown.setOnClickListener { viewModel.setTheme(3) }
+
         binding.btnNormalContrast.setOnClickListener { viewModel.setContrast(0) }
         binding.btnHighContrast.setOnClickListener { viewModel.setContrast(1) }
 

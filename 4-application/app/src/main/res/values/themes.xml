@@ -1,25 +1,27 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Mobdevportfolio" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Standard Surface colors for readability -->
         <item name="colorSurface">@color/white</item>
         <item name="colorOnSurface">@color/black</item>
         <item name="android:windowBackground">@color/white</item>
-        <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <!-- Custom attributes for scaling smaller text -->
+        <item name="textSizeSmall">12sp</item>
+        <item name="textSizeMedium">14sp</item>
+        <item name="textSizeLarge">18sp</item>
     </style>
 
     <!-- High Contrast Overlay for Base Theme -->
     <style name="Theme.Mobdevportfolio.HighContrast">
         <item name="colorOnSurface">@color/black</item>
         <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
     </style>
 
     <!-- Noctua Brown Theme -->
@@ -29,27 +31,40 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/noctua_medium_brown</item>
         <item name="android:windowBackground">@color/noctua_background</item>
-        <!-- Tuning brown for text readability -->
         <item name="colorSurface">@color/noctua_cream</item>
         <item name="colorOnSurface">@color/noctua_coffee_brown</item>
         <item name="android:textColorPrimary">@color/noctua_coffee_brown</item>
+        <item name="android:textColorSecondary">@color/noctua_coffee_brown</item>
+        <item name="textSizeSmall">12sp</item>
+        <item name="textSizeMedium">14sp</item>
+        <item name="textSizeLarge">18sp</item>
     </style>
 
     <!-- High Contrast Overlay for Brown Theme -->
     <style name="Theme.Mobdevportfolio.Brown.HighContrast">
         <item name="colorOnSurface">@color/black</item>
         <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
         <item name="android:windowBackground">@color/noctua_light_beige</item>
     </style>
 
-    <!-- Font Size Styles -->
+    <!-- Font Size Overlays - These update the custom attributes -->
     <style name="Theme.Mobdevportfolio.FontSmall">
         <item name="android:textSize">12sp</item>
+        <item name="textSizeSmall">10sp</item>
+        <item name="textSizeMedium">12sp</item>
+        <item name="textSizeLarge">16sp</item>
     </style>
     <style name="Theme.Mobdevportfolio.FontMedium">
         <item name="android:textSize">16sp</item>
+        <item name="textSizeSmall">12sp</item>
+        <item name="textSizeMedium">14sp</item>
+        <item name="textSizeLarge">20sp</item>
     </style>
     <style name="Theme.Mobdevportfolio.FontLarge">
         <item name="android:textSize">20sp</item>
+        <item name="textSizeSmall">16sp</item>
+        <item name="textSizeMedium">18sp</item>
+        <item name="textSizeLarge">24sp</item>
     </style>
 </resources>
