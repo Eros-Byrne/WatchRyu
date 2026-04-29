@@ -32,11 +32,22 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Open Settings"
+            android:src="@android:drawable/ic_menu_preferences"
+            app:tint="?attr/colorOnSurface" />
+
+        <ImageButton
             android:id="@+id/themeButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="end"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/theme_auto"
             android:src="@android:drawable/ic_menu_manage"

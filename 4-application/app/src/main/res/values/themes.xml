@@ -21,4 +21,15 @@
         <item name="android:windowBackground">@color/noctua_background</item>
         <item name="android:textColorPrimary">@color/noctua_dark_brown</item>
     </style>
+
+    <!-- Font Size Styles -->
+    <style name="Theme.Mobdevportfolio.FontSmall">
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="Theme.Mobdevportfolio.FontMedium">
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="Theme.Mobdevportfolio.FontLarge">
+        <item name="android:textSize">20sp</item>
+    </style>
 </resources>

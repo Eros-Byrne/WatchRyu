@@ -19,9 +19,13 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: AnimeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Theme observation must happen early
+        // Theme and accessibility observation must happen early
         viewModel.themeSelection.observe(this) { themeId ->
             applyTheme(themeId)
+        }
+        
+        viewModel.fontSizeSetting.observe(this) { sizeId ->
+            applyFontSize(sizeId)
         }
 
         super.onCreate(savedInstanceState)
@@ -31,6 +35,14 @@ class MainActivity : AppCompatActivity() {
 
         setupNavigation()
         setupThemeToggle()
+        setupSettingsButton()
+    }
+
+    private fun setupSettingsButton() {
+        binding.settingsButton.setOnClickListener {
+            val settingsSheet = SettingsBottomSheet()
+            settingsSheet.show(supportFragmentManager, "SettingsBottomSheet")
+        }
     }
 
     /**
@@ -73,6 +85,18 @@ class MainActivity : AppCompatActivity() {
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             3 -> setTheme(R.style.Theme_Mobdevportfolio_Brown)
+        }
+    }
+
+    /**
+     * Applies a global font size based on user preference.
+     * In a student project, this shows understanding of theme overlays.
+     */
+    private fun applyFontSize(sizeId: Int) {
+        when (sizeId) {
+            0 -> setTheme(R.style.Theme_Mobdevportfolio_FontSmall)
+            1 -> setTheme(R.style.Theme_Mobdevportfolio_FontMedium)
+            2 -> setTheme(R.style.Theme_Mobdevportfolio_FontLarge)
         }
     }
 }

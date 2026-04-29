@@ -37,6 +37,10 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     // LiveData for theme selection
     val themeSelection: LiveData<Int>
 
+    // Accessibility Settings
+    val contrastSetting: LiveData<Int>
+    val fontSizeSetting: LiveData<Int>
+
     /**
      * Get specific anime list based on status.
      * We use asLiveData() on the Flow from the repository.
@@ -55,6 +59,8 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
         favorites = repository.allAnime.asLiveData()
         lastUpdated = repository.lastUpdated.asLiveData()
         themeSelection = preferenceManager.themeSelection.asLiveData()
+        contrastSetting = preferenceManager.contrastSetting.asLiveData()
+        fontSizeSetting = preferenceManager.fontSizeSetting.asLiveData()
 
         fetchSeasonalAnime()
     }
@@ -62,6 +68,18 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     fun setTheme(theme: Int) {
         viewModelScope.launch {
             preferenceManager.saveThemeSelection(theme)
+        }
+    }
+
+    fun setContrast(contrast: Int) {
+        viewModelScope.launch {
+            preferenceManager.saveContrastSetting(contrast)
+        }
+    }
+
+    fun setFontSize(size: Int) {
+        viewModelScope.launch {
+            preferenceManager.saveFontSizeSetting(size)
         }
     }
 
