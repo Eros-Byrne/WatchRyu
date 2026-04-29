@@ -7,6 +7,7 @@ import com.example.mob_dev_portfolio.model.AnimeStatus
 
 /**
  * Room Entity representing an Anime in the user's list.
+ * Updated to include community scores and personal reviews.
  */
 @Entity(tableName = "anime_list")
 data class AnimeEntity(
@@ -17,7 +18,10 @@ data class AnimeEntity(
     val episodes: Int,
     val episodesWatched: Int,
     val score: Int,
-    val status: AnimeStatus
+    val malScore: Double,
+    val status: AnimeStatus,
+    val wikiUrl: String,
+    val personalReview: String
 )
 
 fun AnimeEntity.toDomainModel(): Anime {
@@ -29,7 +33,10 @@ fun AnimeEntity.toDomainModel(): Anime {
         episodes = episodes,
         episodesWatched = episodesWatched,
         score = score,
-        status = status
+        malScore = malScore,
+        status = status,
+        wikiUrl = wikiUrl,
+        personalReview = personalReview
     )
 }
 
@@ -42,6 +49,9 @@ fun Anime.toEntity(): AnimeEntity {
         episodes = episodes,
         episodesWatched = episodesWatched,
         score = score,
-        status = status
+        malScore = malScore,
+        status = status,
+        wikiUrl = wikiUrl,
+        personalReview = personalReview
     )
 }

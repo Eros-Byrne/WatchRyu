@@ -11,8 +11,10 @@ data class Anime(
     val synopsis: String = "",
     val episodes: Int = 0,
     val episodesWatched: Int = 0,
-    val score: Int = 0,
+    val score: Int = 0, // Personal Score
+    val malScore: Double = 0.0, // Community Score from MAL
     val status: AnimeStatus = AnimeStatus.PLAN_TO_WATCH,
     val wikiUrl: String = "https://en.wikipedia.org/wiki/Anime",
+    val personalReview: String = "", // Personal notes/review
     var isExpanded: Boolean = false
 )

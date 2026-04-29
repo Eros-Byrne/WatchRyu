@@ -14,7 +14,10 @@ data class AnimeDto(
     @SerializedName("mal_id") val malId: Int,
     @SerializedName("title") val title: String,
     @SerializedName("images") val images: JikanImages,
-    @SerializedName("synopsis") val synopsis: String?
+    @SerializedName("synopsis") val synopsis: String?,
+    @SerializedName("score") val score: Double?,
+    @SerializedName("episodes") val episodes: Int?,
+    @SerializedName("url") val url: String?
 )
 
 data class JikanImages(
@@ -33,6 +36,9 @@ fun AnimeDto.toDomainModel(): Anime {
         id = malId,
         title = title,
         imageUrl = images.webp.largeImageUrl,
-        synopsis = synopsis ?: "No synopsis available."
+        synopsis = synopsis ?: "No synopsis available.",
+        malScore = score ?: 0.0,
+        episodes = episodes ?: 0,
+        wikiUrl = url ?: "https://myanimelist.net/anime/$malId"
     )
 }
