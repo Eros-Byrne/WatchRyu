@@ -19,4 +19,16 @@
     <string name="search_hint">Search seasonal anime...</string>
     <string name="time_spent_format">%1$d Days, %2$d Hours, %3$d Minutes</string>
     <string name="total_label">Total: %1$d</string>
+    <string name="stats_header">Library Statistics</string>
+    <string name="time_watched_label">Total Time Watched</string>
+    <string name="import_data_header">Import Data</string>
+    <string name="import_button_label">Import from MAL</string>
+    <string name="stat_watching">Watching</string>
+    <string name="stat_completed">Completed</string>
+    <string name="stat_on_hold">On-Hold</string>
+    <string name="stat_dropped">Dropped</string>
+    <string name="stat_plan_to_watch">Plan to Watch</string>
+    <string name="stat_total_entries">Total Entries</string>
+    <string name="stat_rewatched">Rewatched</string>
+    <string name="stat_episodes">Episodes</string>
 </resources>

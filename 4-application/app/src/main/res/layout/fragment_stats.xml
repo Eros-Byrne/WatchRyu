@@ -4,62 +4,168 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="@android:color/transparent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
-            android:id="@+id/statsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Your Anime Stats"
+            android:text="@string/stats_header"
             android:textColor="?attr/colorOnSurface"
             android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textStyle="bold" />
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/pieChart"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/statsTitle" />
-
-        <TextView
-            android:id="@+id/timeSpentLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Total Time Spent Watching:"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pieChart" />
-
-        <TextView
-            android:id="@+id/timeSpentValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0 Days, 0 Hours, 0 Minutes"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/timeSpentLabel" />
-
-        <!-- Import Section as requested -->
+        <!-- Pie Chart Section -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            app:layout_constraintTop_toBottomOf="@id/timeSpentValue">
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pieChart"
+                android:layout_width="match_parent"
+                android:layout_height="320dp"
+                android:padding="8dp" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Time Watched Section -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="?attr/colorPrimary"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time_watched_label"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:alpha="0.8" />
+
+                <TextView
+                    android:id="@+id/timeSpentValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="0 Days, 0 Hours, 0 Minutes"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Detailed Metrics Grid -->
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:columnCount="2"
+            android:rowCount="4">
+
+            <!-- Watching -->
+            <include
+                android:id="@+id/statWatching"
+                layout="@layout/item_stat_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp" />
+
+            <!-- Completed -->
+            <include
+                android:id="@+id/statCompleted"
+                layout="@layout/item_stat_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp" />
+
+            <!-- On-Hold -->
+            <include
+                android:id="@+id/statOnHold"
+                layout="@layout/item_stat_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp" />
+
+            <!-- Dropped -->
+            <include
+                android:id="@+id/statDropped"
+                layout="@layout/item_stat_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp" />
+
+            <!-- Plan to Watch -->
+            <include
+                android:id="@+id/statPlanToWatch"
+                layout="@layout/item_stat_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp" />
+
+            <!-- Total Entries -->
+            <include
+                android:id="@+id/statTotalEntries"
+                layout="@layout/item_stat_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp" />
+
+            <!-- Rewatched -->
+            <include
+                android:id="@+id/statRewatched"
+                layout="@layout/item_stat_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp" />
+
+            <!-- Episodes -->
+            <include
+                android:id="@+id/statEpisodes"
+                layout="@layout/item_stat_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp" />
+
+        </GridLayout>
+
+        <!-- Import Section -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="32dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,7 +176,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Import from MyAnimeList"
+                    android:text="@string/import_data_header"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -78,7 +184,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
                     android:hint="MAL Username"
                     app:hintTextColor="?attr/colorPrimary">
 
@@ -94,13 +200,13 @@
                     android:id="@+id/importButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Import List" />
+                    android:layout_marginTop="12dp"
+                    android:text="@string/import_button_label" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </ScrollView>

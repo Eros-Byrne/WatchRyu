@@ -16,5 +16,6 @@ data class Anime(
     val status: AnimeStatus = AnimeStatus.PLAN_TO_WATCH,
     val wikiUrl: String = "https://en.wikipedia.org/wiki/Anime",
     val personalReview: String = "", // Personal notes/review
+    val rewatchCount: Int = 0, // Number of times rewatched
     var isExpanded: Boolean = false
 )

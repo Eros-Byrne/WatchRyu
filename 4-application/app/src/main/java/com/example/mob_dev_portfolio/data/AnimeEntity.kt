@@ -7,7 +7,7 @@ import com.example.mob_dev_portfolio.model.AnimeStatus
 
 /**
  * Room Entity representing an Anime in the user's list.
- * Updated to include community scores and personal reviews.
+ * Updated for DB Version 4: Added rewatchCount.
  */
 @Entity(tableName = "anime_list")
 data class AnimeEntity(
@@ -21,7 +21,8 @@ data class AnimeEntity(
     val malScore: Double,
     val status: AnimeStatus,
     val wikiUrl: String,
-    val personalReview: String
+    val personalReview: String,
+    val rewatchCount: Int
 )
 
 fun AnimeEntity.toDomainModel(): Anime {
@@ -36,7 +37,8 @@ fun AnimeEntity.toDomainModel(): Anime {
         malScore = malScore,
         status = status,
         wikiUrl = wikiUrl,
-        personalReview = personalReview
+        personalReview = personalReview,
+        rewatchCount = rewatchCount
     )
 }
 
@@ -52,6 +54,7 @@ fun Anime.toEntity(): AnimeEntity {
         malScore = malScore,
         status = status,
         wikiUrl = wikiUrl,
-        personalReview = personalReview
+        personalReview = personalReview,
+        rewatchCount = rewatchCount
     )
 }

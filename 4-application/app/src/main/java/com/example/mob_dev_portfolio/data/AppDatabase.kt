@@ -9,7 +9,7 @@ import androidx.room.TypeConverters
 /**
  * Main database class for the application.
  */
-@Database(entities = [AnimeEntity::class], version = 3, exportSchema = false)
+@Database(entities = [AnimeEntity::class], version = 4, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun animeDao(): AnimeDao

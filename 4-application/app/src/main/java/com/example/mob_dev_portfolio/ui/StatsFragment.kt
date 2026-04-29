@@ -18,8 +18,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 
 /**
- * Fragment that displays user statistics using a Pie Chart.
- * Also handles the MAL account import feature.
+ * Fragment that displays detailed user statistics and MAL import options.
  */
 class StatsFragment : Fragment() {
 
@@ -36,8 +35,20 @@ class StatsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
+        setupStatLabels()
         setupImport()
         observeStats()
+    }
+
+    private fun setupStatLabels() {
+        binding.statWatching.statLabel.text = getString(R.string.stat_watching)
+        binding.statCompleted.statLabel.text = getString(R.string.stat_completed)
+        binding.statOnHold.statLabel.text = getString(R.string.stat_on_hold)
+        binding.statDropped.statLabel.text = getString(R.string.stat_dropped)
+        binding.statPlanToWatch.statLabel.text = getString(R.string.stat_plan_to_watch)
+        binding.statTotalEntries.statLabel.text = getString(R.string.stat_total_entries)
+        binding.statRewatched.statLabel.text = getString(R.string.stat_rewatched)
+        binding.statEpisodes.statLabel.text = getString(R.string.stat_episodes)
     }
 
     private fun setupImport() {
@@ -45,34 +56,52 @@ class StatsFragment : Fragment() {
             val username = binding.usernameInput.text.toString()
             if (username.isNotEmpty()) {
                 Toast.makeText(context, "Importing list for $username...", Toast.LENGTH_SHORT).show()
-                // TODO: Logic for Jikan User List import
             }
         }
     }
 
     private fun observeStats() {
-        // We observe all anime to calculate counts and time
         viewModel.favorites.observe(viewLifecycleOwner) { list ->
+            // 1. Group by status for the Pie Chart
             val statusCounts = list.groupingBy { it.status }.eachCount()
             
             val entries = mutableListOf<PieEntry>()
             statusCounts.forEach { (status, count) ->
-                entries.add(PieEntry(count.toFloat(), status.name))
+                if (status != AnimeStatus.AIRING) {
+                    entries.add(PieEntry(count.toFloat(), status.name.replace("_", " ")))
+                }
             }
 
-            val dataSet = PieDataSet(entries, "Anime Status")
-            dataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
-            dataSet.valueTextColor = Color.BLACK
-            dataSet.valueTextSize = 14f
+            val dataSet = PieDataSet(entries, "")
+            dataSet.colors = ColorTemplate.JOYFUL_COLORS.toList()
+            dataSet.valueTextColor = Color.WHITE
+            dataSet.valueTextSize = 12f
 
-            binding.pieChart.data = PieData(dataSet)
-            binding.pieChart.centerText = getString(R.string.total_label, list.size)
-            binding.pieChart.animateY(1000)
-            binding.pieChart.invalidate()
+            binding.pieChart.apply {
+                data = PieData(dataSet)
+                centerText = "Library\nBreakdown"
+                setCenterTextSize(16f)
+                description.isEnabled = false
+                legend.isEnabled = false
+                animateY(800)
+                invalidate()
+            }
 
-            // Calculate total time (roughly)
-            // Assuming average episode length is 24 mins
-            val totalMinutes = list.sumOf { it.episodesWatched * 24 }
+            // 2. Set individual grid values
+            binding.statWatching.statValue.text = (statusCounts[AnimeStatus.WATCHING] ?: 0).toString()
+            binding.statCompleted.statValue.text = (statusCounts[AnimeStatus.COMPLETED] ?: 0).toString()
+            binding.statOnHold.statValue.text = (statusCounts[AnimeStatus.ON_HOLD] ?: 0).toString()
+            binding.statDropped.statValue.text = (statusCounts[AnimeStatus.DROPPED] ?: 0).toString()
+            binding.statPlanToWatch.statValue.text = (statusCounts[AnimeStatus.PLAN_TO_WATCH] ?: 0).toString()
+            
+            binding.statTotalEntries.statValue.text = list.size.toString()
+            binding.statRewatched.statValue.text = list.sumOf { it.rewatchCount }.toString()
+            
+            val totalEpisodes = list.sumOf { it.episodesWatched }
+            binding.statEpisodes.statValue.text = totalEpisodes.toString()
+
+            // 3. Calculate Time Watched (Roughly 24 mins per episode)
+            val totalMinutes = totalEpisodes * 24L
             val days = totalMinutes / (24 * 60)
             val hours = (totalMinutes % (24 * 60)) / 60
             val minutes = totalMinutes % 60
