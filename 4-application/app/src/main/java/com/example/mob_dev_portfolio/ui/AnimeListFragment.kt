@@ -7,17 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.mob_dev_portfolio.databinding.FragmentAiringBinding
+import com.example.mob_dev_portfolio.databinding.FragmentAnimeListBinding
 import com.example.mob_dev_portfolio.model.AnimeStatus
 import com.example.mob_dev_portfolio.viewmodel.AnimeViewModel
 
 /**
- * A reusable fragment that displays a list of anime filtered by status.
- * Used for Watching, Completed, Dropped, and Plan to Watch tabs.
+ * Fragment that displays a filtered list from the user's local database.
  */
 class AnimeListFragment : Fragment() {
 
-    private var _binding: FragmentAiringBinding? = null
+    private var _binding: FragmentAnimeListBinding? = null
     private val binding get() = _binding!!
     
     private val viewModel: AnimeViewModel by activityViewModels()
@@ -30,7 +29,7 @@ class AnimeListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentAiringBinding.inflate(inflater, container, false)
+        _binding = FragmentAnimeListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -41,12 +40,15 @@ class AnimeListFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = AnimeAdapter { anime ->
-            // In a list fragment, maybe clicking opens an edit dialog?
-            // For now, let's just keep it simple.
-        }
-        binding.airingRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.airingRecyclerView.adapter = adapter
+        adapter = AnimeAdapter(
+            onTrackClick = { /* Open edit dialog */ },
+            onSaveReview = { anime, review -> 
+                val updatedAnime = anime.copy(personalReview = review)
+                viewModel.updateAnimeInList(updatedAnime)
+            }
+        )
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = adapter
     }
 
     private fun observeViewModel() {

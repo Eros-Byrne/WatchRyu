@@ -4,22 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.mob_dev_portfolio.R
 import com.example.mob_dev_portfolio.databinding.FragmentAiringBinding
 import com.example.mob_dev_portfolio.viewmodel.AnimeViewModel
 
 /**
- * Fragment that displays currently airing anime from the Jikan API.
- * Users can add shows from here to their personal tracking lists.
+ * Enhanced discovery fragment with search and upcoming filters.
  */
 class AiringFragment : Fragment() {
 
     private var _binding: FragmentAiringBinding? = null
     private val binding get() = _binding!!
     
-    // Sharing the ViewModel with MainActivity
     private val viewModel: AnimeViewModel by activityViewModels()
     private lateinit var adapter: AnimeAdapter
 
@@ -32,16 +32,42 @@ class AiringFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         setupRecyclerView()
+        setupSearch()
+        setupFilters()
         observeViewModel()
     }
 
     private fun setupRecyclerView() {
-        adapter = AnimeAdapter { anime ->
-            // Handle actions like adding to list
-            viewModel.updateAnimeInList(anime)
-        }
+        adapter = AnimeAdapter(
+            onTrackClick = { anime -> viewModel.updateAnimeInList(anime) },
+            onSaveReview = { anime, review -> 
+                val updatedAnime = anime.copy(personalReview = review)
+                viewModel.updateAnimeInList(updatedAnime)
+            }
+        )
         binding.airingRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.airingRecyclerView.adapter = adapter
+    }
+
+    private fun setupSearch() {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // TODO: Logic for filtering Airing list
+                return true
+            }
+        })
+    }
+
+    private fun setupFilters() {
+        binding.toggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.btnAiring -> { /* Fetch airing */ }
+                    R.id.btnUpcoming -> { /* Fetch upcoming */ }
+                }
+            }
+        }
     }
 
     private fun observeViewModel() {

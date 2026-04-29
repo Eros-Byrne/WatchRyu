@@ -13,6 +13,18 @@
         android:layout_height="wrap_content"
         android:padding="12dp">
 
+        <!-- Note indicator -->
+        <ImageView
+            android:id="@+id/reviewIndicator"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:visibility="gone"
+            android:src="@android:drawable/ic_menu_edit"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="?attr/colorSecondary"
+            tools:visibility="visible" />
+
         <ImageView
             android:id="@+id/animeImage"
             android:layout_width="100dp"
@@ -32,7 +44,7 @@
             android:maxLines="2"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/reviewIndicator"
             app:layout_constraintStart_toEndOf="@id/animeImage"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Anime Title" />
@@ -45,24 +57,47 @@
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@id/animeTitle"
             app:layout_constraintTop_toBottomOf="@id/animeTitle"
-            tools:text="Episodes: 12" />
+            tools:text="Progress: 12/24" />
 
-        <TextView
-            android:id="@+id/scoreInfo"
+        <!-- Dual Score Display -->
+        <LinearLayout
+            android:id="@+id/scoreContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textSize="14sp"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="@id/animeTitle"
-            app:layout_constraintTop_toBottomOf="@id/episodeInfo"
-            tools:text="Score: 8.5" />
+            app:layout_constraintTop_toBottomOf="@id/episodeInfo">
+
+            <TextView
+                android:id="@+id/personalScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="?attr/colorPrimary"
+                tools:text="You: 8" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" | "
+                android:layout_marginHorizontal="4dp" />
+
+            <TextView
+                android:id="@+id/malScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                tools:text="MAL: 8.5" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/clickToExpand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:alpha="0.6"
-            android:text="Tap for details"
+            android:text="@string/tap_for_details"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@id/animeImage"
             app:layout_constraintStart_toStartOf="@id/animeTitle" />
@@ -84,13 +119,31 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Synopsis text goes here..." />
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/reviewInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Your Review / Notes"
+                app:layout_constraintTop_toBottomOf="@id/animeSynopsis">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/reviewInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:minLines="3" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
             <LinearLayout
-                android:id="@+id/buttonContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/animeSynopsis">
+                app:layout_constraintTop_toBottomOf="@id/reviewInputLayout">
 
                 <Button
                     android:id="@+id/wikiButton"
@@ -98,6 +151,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Wiki" />
+
+                <Button
+                    android:id="@+id/saveReviewButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save Notes" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
 
                 <Button
                     android:id="@+id/addToListButton"

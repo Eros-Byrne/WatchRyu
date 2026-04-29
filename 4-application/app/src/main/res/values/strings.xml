@@ -10,6 +10,13 @@
     <string name="score_label">Score: %1$d/10</string>
     <string name="tap_to_collapse">Tap to collapse</string>
     <string name="tap_for_details">Tap for details</string>
+    <string name="your_score">You: %1$d</string>
+    <string name="mal_score">MAL: %1$.1f</string>
+    <string name="review_hint">Your Review / Notes</string>
+    <string name="save_notes">Save Notes</string>
+    <string name="upcoming_label">Upcoming</string>
+    <string name="airing_label">Currently Airing</string>
+    <string name="search_hint">Search seasonal anime...</string>
     <string name="time_spent_format">%1$d Days, %2$d Hours, %3$d Minutes</string>
     <string name="total_label">Total: %1$d</string>
 </resources>
