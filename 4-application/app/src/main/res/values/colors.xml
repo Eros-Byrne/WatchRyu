@@ -6,6 +6,7 @@
 
     <!-- Noctua Brown Palette - Refined -->
     <color name="noctua_dark_brown">#693D3D</color>
+    <color name="noctua_coffee_brown">#3E2723</color> <!-- Deep brown for high contrast text -->
     <color name="noctua_medium_brown">#A28B78</color>
     <color name="noctua_light_beige">#F5F2EA</color>
     <color name="noctua_cream">#EBE2D5</color>

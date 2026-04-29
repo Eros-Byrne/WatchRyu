@@ -20,12 +20,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Theme and accessibility observation must happen early
+        // We use a combination of the base theme and accessibility overlays
+        val currentThemeId = viewModel.themeSelection.value ?: 0
+        val currentFontSizeId = viewModel.fontSizeSetting.value ?: 1
+        val currentContrastId = viewModel.contrastSetting.value ?: 0
+
+        applyGlobalStyles(currentThemeId, currentFontSizeId, currentContrastId)
+
         viewModel.themeSelection.observe(this) { themeId ->
-            applyTheme(themeId)
+            if (themeId != currentThemeId) recreate()
         }
         
         viewModel.fontSizeSetting.observe(this) { sizeId ->
-            applyFontSize(sizeId)
+            if (sizeId != currentFontSizeId) recreate()
+        }
+
+        viewModel.contrastSetting.observe(this) { contrastId ->
+            if (contrastId != currentContrastId) recreate()
         }
 
         super.onCreate(savedInstanceState)
@@ -79,21 +90,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun applyTheme(themeId: Int) {
+    /**
+     * Applies the complete look of the app. 
+     * In a real project, we apply the base theme first, then font/contrast overlays.
+     */
+    private fun applyGlobalStyles(themeId: Int, fontSizeId: Int, contrastId: Int) {
+        // 1. Set Base Theme
         when (themeId) {
             0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             3 -> setTheme(R.style.Theme_Mobdevportfolio_Brown)
         }
-    }
 
-    /**
-     * Applies a global font size based on user preference.
-     * In a student project, this shows understanding of theme overlays.
-     */
-    private fun applyFontSize(sizeId: Int) {
-        when (sizeId) {
+        // 2. Apply High Contrast Overlay if enabled
+        if (contrastId == 1) {
+            if (themeId == 3) {
+                setTheme(R.style.Theme_Mobdevportfolio_Brown_HighContrast)
+            } else {
+                setTheme(R.style.Theme_Mobdevportfolio_HighContrast)
+            }
+        }
+
+        // 3. Apply Font Size Overlay
+        when (fontSizeId) {
             0 -> setTheme(R.style.Theme_Mobdevportfolio_FontSmall)
             1 -> setTheme(R.style.Theme_Mobdevportfolio_FontMedium)
             2 -> setTheme(R.style.Theme_Mobdevportfolio_FontLarge)

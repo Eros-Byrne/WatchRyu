@@ -9,7 +9,16 @@
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
+        <!-- Standard Surface colors for readability -->
+        <item name="colorSurface">@color/black</item>
+        <item name="colorOnSurface">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    </style>
+
+    <!-- High Contrast Overlay for Dark Theme -->
+    <style name="Theme.Mobdevportfolio.HighContrast">
+        <item name="colorOnSurface">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
     </style>
 </resources>

@@ -8,8 +8,18 @@
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
+        <!-- Standard Surface colors for readability -->
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="android:windowBackground">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    </style>
+
+    <!-- High Contrast Overlay for Base Theme -->
+    <style name="Theme.Mobdevportfolio.HighContrast">
+        <item name="colorOnSurface">@color/black</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <!-- Noctua Brown Theme -->
@@ -19,7 +29,17 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/noctua_medium_brown</item>
         <item name="android:windowBackground">@color/noctua_background</item>
-        <item name="android:textColorPrimary">@color/noctua_dark_brown</item>
+        <!-- Tuning brown for text readability -->
+        <item name="colorSurface">@color/noctua_cream</item>
+        <item name="colorOnSurface">@color/noctua_coffee_brown</item>
+        <item name="android:textColorPrimary">@color/noctua_coffee_brown</item>
+    </style>
+
+    <!-- High Contrast Overlay for Brown Theme -->
+    <style name="Theme.Mobdevportfolio.Brown.HighContrast">
+        <item name="colorOnSurface">@color/black</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:windowBackground">@color/noctua_light_beige</item>
     </style>
 
     <!-- Font Size Styles -->

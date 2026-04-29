@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="12dp"
     app:cardElevation="6dp">
 
@@ -23,7 +24,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="?attr/colorSecondary"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="@null" />
 
         <ImageView
             android:id="@+id/animeImage"
@@ -42,6 +44,7 @@
             android:layout_marginStart="12dp"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/reviewIndicator"
@@ -54,6 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@id/animeTitle"
             app:layout_constraintTop_toBottomOf="@id/animeTitle"
@@ -75,18 +79,21 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
                 tools:text="You: 8" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" | "
+                android:textColor="?attr/colorOnSurface"
                 android:layout_marginHorizontal="4dp" />
 
             <TextView
                 android:id="@+id/malScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="14sp"
                 tools:text="MAL: 8.5" />
 
@@ -98,6 +105,7 @@
             android:layout_height="wrap_content"
             android:alpha="0.6"
             android:text="@string/tap_for_details"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@id/animeImage"
             app:layout_constraintStart_toStartOf="@id/animeTitle" />
@@ -115,6 +123,7 @@
                 android:id="@+id/animeSynopsis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="14sp"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Synopsis text goes here..." />
@@ -125,7 +134,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:hint="Your Review / Notes"
+                android:hint="@string/review_hint"
+                app:hintTextColor="?attr/colorPrimary"
                 app:layout_constraintTop_toBottomOf="@id/animeSynopsis">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -134,6 +144,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="top"
                     android:inputType="textMultiLine"
+                    android:textColor="?attr/colorOnSurface"
                     android:minLines="3" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -150,14 +161,16 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Wiki" />
+                    android:text="Wiki"
+                    android:textColor="?attr/colorPrimary" />
 
                 <Button
                     android:id="@+id/saveReviewButton"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Save Notes" />
+                    android:text="@string/save_notes"
+                    android:textColor="?attr/colorPrimary" />
 
                 <View
                     android:layout_width="0dp"
@@ -169,7 +182,8 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Track" />
+                    android:text="Track"
+                    android:textColor="?attr/colorPrimary" />
 
             </LinearLayout>
 
