@@ -63,6 +63,16 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     fun getAnimeByStatus(status: AnimeStatus): LiveData<List<Anime>> = 
         repository.getAnimeByStatus(status).asLiveData()
 
+    fun importMalList(username: String) {
+        viewModelScope.launch {
+            try {
+                repository.importMalList(username)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun setTheme(theme: Int) {
         viewModelScope.launch { preferenceManager.saveThemeSelection(theme) }
     }

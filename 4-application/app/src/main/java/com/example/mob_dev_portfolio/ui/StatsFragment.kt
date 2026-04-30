@@ -56,6 +56,10 @@ class StatsFragment : Fragment() {
             val username = binding.usernameInput.text.toString()
             if (username.isNotEmpty()) {
                 Toast.makeText(context, "Importing list for $username...", Toast.LENGTH_SHORT).show()
+                viewModel.importMalList(username)
+                binding.usernameInput.text?.clear()
+            } else {
+                Toast.makeText(context, "Please enter a username", Toast.LENGTH_SHORT).show()
             }
         }
     }

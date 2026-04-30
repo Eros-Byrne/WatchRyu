@@ -3,8 +3,10 @@ package com.example.mob_dev_portfolio.data
 import com.example.mob_dev_portfolio.model.Anime
 import com.example.mob_dev_portfolio.model.AnimeStatus
 import com.example.mob_dev_portfolio.model.toDomainModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 /**
  * Repository class that abstracts access to Jikan API and Room DB.
@@ -24,7 +26,19 @@ class AnimeRepository(
     val lastUpdated: Flow<Long> = preferenceManager.lastUpdated
 
     /**
-     * Get anime filtered by their tracking status (Watching, Completed, etc.)
+     * Imports a user's MAL list using the Jikan API.
+     */
+    suspend fun importMalList(username: String) = withContext(Dispatchers.IO) {
+        val response = apiService.getUserAnimeList(username)
+        val domainList = response.data.map { it.toDomainModel() }
+        
+        for (anime in domainList) {
+            animeDao.insertAnime(anime.toEntity())
+        }
+    }
+
+    /**
+     * Get anime filtered by their tracking status.
      */
     fun getAnimeByStatus(status: AnimeStatus): Flow<List<Anime>> {
         return animeDao.getAnimeByStatus(status).map { entities ->
@@ -46,10 +60,7 @@ class AnimeRepository(
     suspend fun fetchSeasonalAnime(): List<Anime> {
         val response = apiService.getSeasonalAnime()
         val animeList = response.data.map { it.toDomainModel() }
-        
-        // Update last updated time in DataStore
         preferenceManager.saveLastUpdated(System.currentTimeMillis())
-        
         return animeList
     }
 
