@@ -34,7 +34,6 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
             when (theme) {
                 1 -> binding.themeToggleGroup.check(R.id.btnThemeLight)
                 2 -> binding.themeToggleGroup.check(R.id.btnThemeDark)
-                3 -> binding.themeToggleGroup.check(R.id.btnThemeBrown)
             }
         }
 
@@ -57,7 +56,6 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         // 2. Click Listeners
         binding.btnThemeLight.setOnClickListener { viewModel.setTheme(1) }
         binding.btnThemeDark.setOnClickListener { viewModel.setTheme(2) }
-        binding.btnThemeBrown.setOnClickListener { viewModel.setTheme(3) }
 
         binding.btnNormalContrast.setOnClickListener { viewModel.setContrast(0) }
         binding.btnHighContrast.setOnClickListener { viewModel.setContrast(1) }

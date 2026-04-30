@@ -70,11 +70,6 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 setTheme(R.style.Theme_WatchRyu)
             }
-            3 -> {
-                // Force Light mode resources for the custom brown palette to prevent clashing
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                setTheme(R.style.Theme_WatchRyu_Brown)
-            }
             else -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                 setTheme(R.style.Theme_WatchRyu)

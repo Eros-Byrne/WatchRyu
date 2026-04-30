@@ -45,14 +45,6 @@
             android:layout_weight="1"
             android:text="Dark" />
 
-        <Button
-            android:id="@+id/btnThemeBrown"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Brown" />
-
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <!-- Contrast Toggle -->

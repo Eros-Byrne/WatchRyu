@@ -4,18 +4,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Noctua Brown Palette - Refined -->
-    <color name="noctua_dark_brown">#693D3D</color>
-    <color name="noctua_coffee_brown">#3E2723</color> <!-- Deep brown for high contrast text -->
-    <color name="noctua_medium_brown">#A28B78</color>
-    <color name="noctua_light_beige">#F5F2EA</color>
-    <color name="noctua_cream">#EBE2D5</color>
-    <color name="noctua_background">#E3DAC9</color> <!-- Slightly darker for texture -->
-
     <!-- Theme Watermark Colors -->
     <color name="watermark_light">#10000000</color>
     <color name="watermark_dark">#10FFFFFF</color>
-    <color name="watermark_brown">#15693D3D</color>
 
     <!-- Material Basics -->
     <color name="purple_200">#FFBB86FC</color>
