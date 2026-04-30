@@ -33,6 +33,14 @@ class AnimeRepository(
     }
 
     /**
+     * Fetches top rated anime from the Jikan API.
+     */
+    suspend fun fetchTopAnime(): List<Anime> {
+        val response = apiService.getTopAnime()
+        return response.data.map { it.toDomainModel() }
+    }
+
+    /**
      * Fetches seasonal anime from the Jikan API.
      */
     suspend fun fetchSeasonalAnime(): List<Anime> {
@@ -43,6 +51,14 @@ class AnimeRepository(
         preferenceManager.saveLastUpdated(System.currentTimeMillis())
         
         return animeList
+    }
+
+    /**
+     * Fetches upcoming anime from the Jikan API.
+     */
+    suspend fun fetchUpcomingAnime(): List<Anime> {
+        val response = apiService.getUpcomingAnime()
+        return response.data.map { it.toDomainModel() }
     }
 
     /**

@@ -12,48 +12,43 @@ import com.example.mob_dev_portfolio.data.JikanApiService
 import com.example.mob_dev_portfolio.data.PreferenceManager
 import com.example.mob_dev_portfolio.model.Anime
 import com.example.mob_dev_portfolio.model.AnimeStatus
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /**
- * ViewModel for the Anime Tracker.
- * This class survives configuration changes like screen rotations, ensuring the UI state is preserved.
- * Using AndroidViewModel to access Application context for repository initialization.
+ * ViewModel for WatchRyu.
+ * Manages anime data and accessibility settings.
  */
 class AnimeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: AnimeRepository
     private val preferenceManager: PreferenceManager
     
-    // Internal mutable list for search results/seasonal anime
-    private val _animeList = MutableLiveData<List<Anime>>()
-    val animeList: LiveData<List<Anime>> get() = _animeList
-
-    // LiveData for all anime in user's list (for stats)
+    val animeList = MutableLiveData<List<Anime>>()
     val favorites: LiveData<List<Anime>>
-
-    // LiveData for last updated time, automatically updated from DataStore Flow
     val lastUpdated: LiveData<Long>
     
-    // LiveData for theme selection
     val themeSelection: LiveData<Int>
-
-    // Accessibility Settings
     val contrastSetting: LiveData<Int>
     val fontSizeSetting: LiveData<Int>
 
     /**
-     * Get specific anime list based on status.
-     * We use asLiveData() on the Flow from the repository.
+     * Helper to get the synchronous state of a preference.
+     * This is useful for theme application in MainActivity's onCreate.
      */
-    fun getAnimeByStatus(status: AnimeStatus): LiveData<List<Anime>> {
-        return repository.getAnimeByStatus(status).asLiveData()
+    fun getInitialSettings(): Triple<Int, Int, Int> = runBlocking {
+        Triple(
+            preferenceManager.themeSelection.first(),
+            preferenceManager.fontSizeSetting.first(),
+            preferenceManager.contrastSetting.first()
+        )
     }
 
     init {
         val database = AppDatabase.getDatabase(application)
         val apiService = JikanApiService.create()
         preferenceManager = PreferenceManager(application)
-        
         repository = AnimeRepository(apiService, database.animeDao(), preferenceManager)
         
         favorites = repository.allAnime.asLiveData()
@@ -65,45 +60,63 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
         fetchSeasonalAnime()
     }
 
+    fun getAnimeByStatus(status: AnimeStatus): LiveData<List<Anime>> = 
+        repository.getAnimeByStatus(status).asLiveData()
+
     fun setTheme(theme: Int) {
-        viewModelScope.launch {
-            preferenceManager.saveThemeSelection(theme)
-        }
+        viewModelScope.launch { preferenceManager.saveThemeSelection(theme) }
     }
 
     fun setContrast(contrast: Int) {
-        viewModelScope.launch {
-            preferenceManager.saveContrastSetting(contrast)
-        }
+        viewModelScope.launch { preferenceManager.saveContrastSetting(contrast) }
     }
 
     fun setFontSize(size: Int) {
+        viewModelScope.launch { preferenceManager.saveFontSizeSetting(size) }
+    }
+
+    fun fetchTopAnime() {
         viewModelScope.launch {
-            preferenceManager.saveFontSizeSetting(size)
+            try {
+                // Clear current list to show loading
+                animeList.postValue(emptyList())
+                val list = repository.fetchTopAnime()
+                animeList.postValue(list)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
     fun fetchSeasonalAnime() {
         viewModelScope.launch {
             try {
+                animeList.postValue(emptyList())
                 val list = repository.fetchSeasonalAnime()
-                _animeList.postValue(list)
+                animeList.postValue(list)
             } catch (e: Exception) {
-                // Handle error (e.g., no internet)
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun fetchUpcomingAnime() {
+        viewModelScope.launch {
+            try {
+                animeList.postValue(emptyList())
+                val list = repository.fetchUpcomingAnime()
+                animeList.postValue(list)
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
     fun updateAnimeInList(anime: Anime) {
-        viewModelScope.launch {
-            repository.updateAnimeInList(anime)
-        }
+        viewModelScope.launch { repository.updateAnimeInList(anime) }
     }
 
     fun deleteAnimeFromList(anime: Anime) {
-        viewModelScope.launch {
-            repository.deleteAnimeFromList(anime)
-        }
+        viewModelScope.launch { repository.deleteAnimeFromList(anime) }
     }
 }

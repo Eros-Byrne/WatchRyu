@@ -15,6 +15,8 @@
     <string name="review_hint">Your Review / Notes</string>
     <string name="save_notes">Save Notes</string>
     <string name="upcoming_label">Upcoming</string>
+    <string name="seasonal_label">Seasonal</string>
+    <string name="top_anime_label">Top Anime</string>
     <string name="airing_label">Currently Airing</string>
     <string name="search_hint">Search seasonal anime...</string>
     <string name="time_spent_format">%1$d Days, %2$d Hours, %3$d Minutes</string>

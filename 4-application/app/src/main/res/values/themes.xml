@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.Mobdevportfolio" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <!-- Base application theme (Light/Dark/Auto) -->
+    <style name="Theme.WatchRyu" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -11,21 +11,14 @@
         <item name="android:windowBackground">@color/white</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
 
-        <!-- Custom attributes for scaling smaller text -->
+        <!-- Default text sizes -->
         <item name="textSizeSmall">12sp</item>
         <item name="textSizeMedium">14sp</item>
         <item name="textSizeLarge">18sp</item>
     </style>
 
-    <!-- High Contrast Overlay for Base Theme -->
-    <style name="Theme.Mobdevportfolio.HighContrast">
-        <item name="colorOnSurface">@color/black</item>
-        <item name="android:textColorPrimary">@color/black</item>
-        <item name="android:textColorSecondary">@color/black</item>
-    </style>
-
     <!-- Noctua Brown Theme -->
-    <style name="Theme.Mobdevportfolio.Brown" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.WatchRyu.Brown" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/noctua_dark_brown</item>
         <item name="colorPrimaryVariant">@color/noctua_dark_brown</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -40,28 +33,33 @@
         <item name="textSizeLarge">18sp</item>
     </style>
 
-    <!-- High Contrast Overlay for Brown Theme -->
-    <style name="Theme.Mobdevportfolio.Brown.HighContrast">
+    <!-- High Contrast Overlays -->
+    <style name="Theme.WatchRyu.HighContrast">
         <item name="colorOnSurface">@color/black</item>
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:textColorSecondary">@color/black</item>
-        <item name="android:windowBackground">@color/noctua_light_beige</item>
     </style>
 
-    <!-- Font Size Overlays - These update the custom attributes -->
-    <style name="Theme.Mobdevportfolio.FontSmall">
+    <style name="Theme.WatchRyu.HighContrast.Dark">
+        <item name="colorOnSurface">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+
+    <!-- Font Size Overlays -->
+    <style name="Theme.WatchRyu.FontSmall">
         <item name="android:textSize">12sp</item>
         <item name="textSizeSmall">10sp</item>
         <item name="textSizeMedium">12sp</item>
         <item name="textSizeLarge">16sp</item>
     </style>
-    <style name="Theme.Mobdevportfolio.FontMedium">
+    <style name="Theme.WatchRyu.FontMedium">
         <item name="android:textSize">16sp</item>
         <item name="textSizeSmall">12sp</item>
         <item name="textSizeMedium">14sp</item>
         <item name="textSizeLarge">20sp</item>
     </style>
-    <style name="Theme.Mobdevportfolio.FontLarge">
+    <style name="Theme.WatchRyu.FontLarge">
         <item name="android:textSize">20sp</item>
         <item name="textSizeSmall">16sp</item>
         <item name="textSizeMedium">18sp</item>

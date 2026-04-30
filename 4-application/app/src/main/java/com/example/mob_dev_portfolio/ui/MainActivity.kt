@@ -11,7 +11,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 /**
  * Main Activity for WatchRyu.
- * Implements a unified settings approach and global accessibility scaling.
+ * Handles the multi-layered theme application (Theme + Contrast + Font).
  */
 class MainActivity : AppCompatActivity() {
 
@@ -19,30 +19,25 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: AnimeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Theme and accessibility observation must happen BEFORE super.onCreate
-        val currentThemeId = viewModel.themeSelection.value ?: 0
-        val currentFontSizeId = viewModel.fontSizeSetting.value ?: 1
-        val currentContrastId = viewModel.contrastSetting.value ?: 0
+        // We MUST fetch initial settings synchronously because DataStore/LiveData is async.
+        // If we don't, the app starts with Light mode for one frame and then flickers.
+        val initialSettings = viewModel.getInitialSettings()
+        val theme = initialSettings.first
+        val font = initialSettings.second
+        val contrast = initialSettings.third
 
-        applyGlobalStyles(currentThemeId, currentFontSizeId, currentContrastId)
-
-        // Observe changes to trigger recreation
-        viewModel.themeSelection.observe(this) { themeId ->
-            if (themeId != currentThemeId) recreate()
-        }
-        
-        viewModel.fontSizeSetting.observe(this) { sizeId ->
-            if (sizeId != currentFontSizeId) recreate()
-        }
-
-        viewModel.contrastSetting.observe(this) { contrastId ->
-            if (contrastId != currentContrastId) recreate()
-        }
+        // Apply layers BEFORE super.onCreate
+        applyGlobalStyles(theme, font, contrast)
 
         super.onCreate(savedInstanceState)
         
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Observe for real-time changes from the Settings panel
+        viewModel.themeSelection.observe(this) { if (it != theme) recreate() }
+        viewModel.fontSizeSetting.observe(this) { if (it != font) recreate() }
+        viewModel.contrastSetting.observe(this) { if (it != contrast) recreate() }
 
         setupNavigation()
         setupSettingsButton()
@@ -51,50 +46,61 @@ class MainActivity : AppCompatActivity() {
     private fun setupNavigation() {
         val adapter = MainPagerAdapter(this)
         binding.viewPager.adapter = adapter
-
-        val tabTitles = listOf(
-            "Airing", "Stats", "Watching", "Completed", "Dropped", "Plan"
-        )
-
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = tabTitles[position]
-        }.attach()
+        val tabTitles = listOf("Airing", "Stats", "Watching", "Completed", "Dropped", "Plan")
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos -> tab.text = tabTitles[pos] }.attach()
     }
 
     private fun setupSettingsButton() {
         binding.settingsButton.setOnClickListener {
-            val settingsSheet = SettingsBottomSheet()
-            settingsSheet.show(supportFragmentManager, "SettingsBottomSheet")
+            SettingsBottomSheet().show(supportFragmentManager, "Settings")
         }
     }
 
     /**
-     * Applies the complete look of the app. 
-     * In a student project, using theme overlays shows high-level competence.
+     * Applies themes in the correct order so they overlay properly.
      */
     private fun applyGlobalStyles(themeId: Int, fontSizeId: Int, contrastId: Int) {
-        // 1. Set Base Theme
+        // 1. Base Theme Selection
         when (themeId) {
-            0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            3 -> setTheme(R.style.Theme_Mobdevportfolio_Brown)
-        }
-
-        // 2. Apply High Contrast Overlay if enabled
-        if (contrastId == 1) {
-            if (themeId == 3) {
-                setTheme(R.style.Theme_Mobdevportfolio_Brown_HighContrast)
-            } else {
-                setTheme(R.style.Theme_Mobdevportfolio_HighContrast)
+            1 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                setTheme(R.style.Theme_WatchRyu)
+            }
+            2 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                setTheme(R.style.Theme_WatchRyu)
+            }
+            3 -> {
+                // Force Light mode resources for the custom brown palette to prevent clashing
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                setTheme(R.style.Theme_WatchRyu_Brown)
+            }
+            else -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                setTheme(R.style.Theme_WatchRyu)
             }
         }
 
-        // 3. Apply Font Size Overlay
-        when (fontSizeId) {
-            0 -> setTheme(R.style.Theme_Mobdevportfolio_FontSmall)
-            1 -> setTheme(R.style.Theme_Mobdevportfolio_FontMedium)
-            2 -> setTheme(R.style.Theme_Mobdevportfolio_FontLarge)
+        // 2. High Contrast Layer
+        if (contrastId == 1) {
+            val isDark = themeId == 2 || (themeId == 0 && isSystemInDarkMode())
+            if (isDark) {
+                setTheme(R.style.Theme_WatchRyu_HighContrast_Dark)
+            } else {
+                setTheme(R.style.Theme_WatchRyu_HighContrast)
+            }
         }
+
+        // 3. Font Size Layer
+        when (fontSizeId) {
+            0 -> setTheme(R.style.Theme_WatchRyu_FontSmall)
+            2 -> setTheme(R.style.Theme_WatchRyu_FontLarge)
+            else -> setTheme(R.style.Theme_WatchRyu_FontMedium)
+        }
+    }
+
+    private fun isSystemInDarkMode(): Boolean {
+        val uiMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+        return uiMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
     }
 }

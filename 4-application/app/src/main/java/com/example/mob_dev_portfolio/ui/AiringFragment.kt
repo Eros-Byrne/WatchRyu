@@ -53,7 +53,16 @@ class AiringFragment : Fragment() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
             override fun onQueryTextChange(newText: String?): Boolean {
-                // TODO: Logic for filtering Airing list
+                // Filter the current list in the adapter
+                val currentList = viewModel.animeList.value ?: emptyList()
+                if (newText.isNullOrEmpty()) {
+                    adapter.submitList(currentList)
+                } else {
+                    val filtered = currentList.filter { 
+                        it.title.contains(newText, ignoreCase = true) 
+                    }
+                    adapter.submitList(filtered)
+                }
                 return true
             }
         })
@@ -62,9 +71,12 @@ class AiringFragment : Fragment() {
     private fun setupFilters() {
         binding.toggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) {
+                // Show progress bar during fetch
+                binding.progressBar.visibility = View.VISIBLE
                 when (checkedId) {
-                    R.id.btnAiring -> { /* Fetch airing */ }
-                    R.id.btnUpcoming -> { /* Fetch upcoming */ }
+                    R.id.btnTop -> viewModel.fetchTopAnime()
+                    R.id.btnSeasonal -> viewModel.fetchSeasonalAnime()
+                    R.id.btnUpcoming -> viewModel.fetchUpcomingAnime()
                 }
             }
         }
