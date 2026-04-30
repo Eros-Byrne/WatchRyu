@@ -174,9 +174,15 @@ class StatsFragment : Fragment() {
                 setCenterTextColor(textColor)
                 setHoleColor(Color.TRANSPARENT)
                 setTransparentCircleAlpha(0)
+                // Add offsets to prevent labels from cutting off
+                setExtraOffsets(30f, 0f, 30f, 0f)
                 description.isEnabled = false
                 legend.isEnabled = true
                 legend.textColor = textColor
+                legend.verticalAlignment = com.github.mikephil.charting.components.Legend.LegendVerticalAlignment.BOTTOM
+                legend.horizontalAlignment = com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment.CENTER
+                legend.orientation = com.github.mikephil.charting.components.Legend.LegendOrientation.HORIZONTAL
+                legend.setDrawInside(false)
                 setEntryLabelColor(textColor)
                 setEntryLabelTextSize(11f)
                 animateY(800)

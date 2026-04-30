@@ -32,8 +32,8 @@
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pieChart"
                 android:layout_width="match_parent"
-                android:layout_height="360dp"
-                android:padding="24dp" />
+                android:layout_height="320dp"
+                android:padding="0dp" />
 
         </com.google.android.material.card.MaterialCardView>
 
