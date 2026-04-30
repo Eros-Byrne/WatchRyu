@@ -3,16 +3,16 @@
 
 Student ID: `c24056128`
 
-The **Anime Tracker** application leverages several core components of the Android API to deliver a robust and modern user experience, adhering to the Modern Android Development (MAD) guidelines.
+**WatchRyu** leverages a suite of modern Android APIs to provide a stable, accessible, and high-performance experience.
 
-### UI and Layout
-The application utilizes **ViewBinding** to interact with XML layouts. This choice is critical as it provides null-safety and compile-time validation, completely eliminating the need for the deprecated and brittle `findViewById()` method. For list display, **RecyclerView** is used in conjunction with **ListAdapter** and **DiffUtil**. Unlike the legacy `ListView`, `RecyclerView` efficiently recycles views, and `DiffUtil` ensures only changed items are updated, significantly reducing the performance overhead of `notifyDataSetChanged()`. Furthermore, **Vector Drawables** and theme-aware attributes are used to implement a minimalist background watermark, reducing visual clutter while maintaining a modern aesthetic.
+### UI and Navigation
+The application uses **ViewBinding** to interact with layouts, ensuring null-safety and compile-time validation while strictly avoiding the deprecated `findViewById()`. For navigation, I implemented **ViewPager2** and **TabLayoutMediator** to manage seven distinct fragments. The list rendering utilizes **RecyclerView** with **ListAdapter** and **DiffUtil**. This architecture ensures that only changed data is updated, avoiding the performance-heavy `notifyDataSetChanged()` and providing a smooth user experience.
 
-### State Management and Lifecycle
-Following the recommended MVVM architecture, the app uses **ViewModel** and **LiveData**. The `ViewModel` is designed to survive configuration changes, such as screen rotation on the Pixel 3a. By observing `LiveData` from the `MainActivity`, the UI automatically stays in sync with the underlying data state without manual intervention.
+### State and Accessibility
+Following the MVVM pattern, **ViewModel** and **LiveData** are used to maintain state across configuration changes, such as screen rotation. I implemented a sophisticated **Theme Overlay** system. In `MainActivity`, the app layers accessibility preferences (High Contrast and Font Scaling) on top of the base theme. By defining custom attributes in `attrs.xml`, I ensured that all text, including captions, scales proportionally—a significant improvement over basic SP scaling.
 
-### Data Persistence and Storage
-Local storage is handled by the **Room Persistence Library**, which provides an abstraction layer over SQLite. Room ensures that "Favorited" anime entries are saved safely and can be retrieved using Kotlin **Flow** for reactive updates. For simple key-value pairs, such as the 'last updated' timestamp, the app uses **Jetpack DataStore**. This modern replacement for `SharedPreferences` uses Coroutines and Flow to handle data updates asynchronously, avoiding the main-thread blocking issues associated with the older API.
+### Data and Storage
+Local persistence is managed via the **Room Persistence Library (v4)**. I designed a schema to support tracking status, personal reviews, and rewatch counts. For global settings, I utilized **Jetpack DataStore**, which provides a reactive, non-blocking alternative to the deprecated `SharedPreferences`. To handle data portability, I integrated the **Storage Access Framework (SAF)**, allowing secure XML/CSV exports using standard Android system pickers.
 
-### Network and Media
-**Retrofit** is employed to communicate with the Jikan REST API. It simplifies network requests by converting API endpoints into Kotlin interfaces and automatically parsing JSON responses via GSON. For image loading, **Coil** (Coroutines-based Image Loader) is used to fetch and cache anime cover art efficiently, ensuring smooth scrolling in the `RecyclerView`.
+### Networking and Analytics
+**Retrofit** with **GSON** handles communication with the Jikan API. I implemented robust error handling to manage cases where MAL blocks automated scrapers, providing users with informative feedback. Finally, the **MPAndroidChart** API is used to generate dynamic Pie Charts, programmatically resolving theme-aware colors to ensure the UI remains cohesive and professional in both Light and Dark modes. (297 words)

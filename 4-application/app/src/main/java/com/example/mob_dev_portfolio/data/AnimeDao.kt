@@ -27,4 +27,7 @@ interface AnimeDao {
 
     @Query("SELECT EXISTS(SELECT * FROM anime_list WHERE id = :id)")
     suspend fun isAnimeInList(id: Int): Boolean
+
+    @Query("DELETE FROM anime_list")
+    suspend fun clearAllAnime()
 }

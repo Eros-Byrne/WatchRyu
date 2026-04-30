@@ -119,4 +119,14 @@
 
     </RadioGroup>
 
+    <!-- Clear Data Section -->
+    <Button
+        android:id="@+id/btnClearData"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Reset Local Database"
+        android:textColor="#FF5252" />
+
 </LinearLayout>

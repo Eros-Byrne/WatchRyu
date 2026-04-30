@@ -108,6 +108,13 @@ class AnimeRepository(
     }
 
     /**
+     * Completely wipes the local database.
+     */
+    suspend fun clearDatabase() {
+        animeDao.clearAllAnime()
+    }
+
+    /**
      * Add or update an anime in the user's tracking list.
      */
     suspend fun updateAnimeInList(anime: Anime) {

@@ -174,4 +174,8 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     fun deleteAnimeFromList(anime: Anime) {
         viewModelScope.launch { repository.deleteAnimeFromList(anime) }
     }
+
+    fun clearDatabase() {
+        viewModelScope.launch { repository.clearDatabase() }
+    }
 }

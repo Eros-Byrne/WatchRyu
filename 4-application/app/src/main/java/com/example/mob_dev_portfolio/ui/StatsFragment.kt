@@ -110,6 +110,26 @@ class StatsFragment : Fragment() {
             xmlPicker.launch("text/xml")
         }
 
+        binding.importDemoButton.setOnClickListener {
+            try {
+                // Look for any XML file in the assets folder to use as a demo
+                val assetManager = requireContext().assets
+                val files = assetManager.list("") ?: emptyArray()
+                val xmlFile = files.find { it.endsWith(".xml") }
+                
+                if (xmlFile != null) {
+                    val inputStream = assetManager.open(xmlFile)
+                    val list = ImportHelper.parseMalXml(inputStream)
+                    list.forEach { anime -> viewModel.updateAnimeInList(anime) }
+                    Toast.makeText(context, "Loaded $xmlFile from assets!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "No .xml file found in assets folder", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "Error loading demo data", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         binding.exportAccountButton.setOnClickListener {
             accountExporter.launch("WatchRyu_Account_Export.xml")
         }

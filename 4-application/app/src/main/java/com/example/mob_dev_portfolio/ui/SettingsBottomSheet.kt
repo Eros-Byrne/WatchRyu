@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import com.example.mob_dev_portfolio.R
 import com.example.mob_dev_portfolio.databinding.BottomSheetSettingsBinding
@@ -63,6 +65,20 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         binding.radioSmall.setOnClickListener { viewModel.setFontSize(0) }
         binding.radioMedium.setOnClickListener { viewModel.setFontSize(1) }
         binding.radioLarge.setOnClickListener { viewModel.setFontSize(2) }
+
+        // Clear data logic
+        binding.btnClearData.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Reset Data?")
+                .setMessage("This will permanently delete your entire local library. You should export your data first.")
+                .setPositiveButton("Reset") { _, _ ->
+                    viewModel.clearDatabase()
+                    Toast.makeText(context, "Database wiped", Toast.LENGTH_SHORT).show()
+                    dismiss()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
     }
 
     override fun onDestroyView() {
