@@ -122,22 +122,43 @@ class StatsFragment : Fragment() {
             
             val entries = mutableListOf<PieEntry>()
             statusCounts.forEach { (status, count) ->
-                if (status != AnimeStatus.AIRING) {
+                if (status != AnimeStatus.AIRING && count > 0) {
                     entries.add(PieEntry(count.toFloat(), status.name.replace("_", " ")))
                 }
             }
 
+            // Get theme-aware color for text
+            val typedValue = android.util.TypedValue()
+            context?.theme?.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
+            val textColor = typedValue.data
+
             val dataSet = PieDataSet(entries, "")
-            dataSet.colors = ColorTemplate.JOYFUL_COLORS.toList()
-            dataSet.valueTextColor = Color.WHITE
-            dataSet.valueTextSize = 12f
+            dataSet.apply {
+                colors = ColorTemplate.JOYFUL_COLORS.toList()
+                valueTextColor = textColor
+                valueTextSize = 12f
+                sliceSpace = 3f
+                // Move labels outside to fix overlapping
+                xValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
+                yValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
+                valueLinePart1OffsetPercentage = 80f
+                valueLinePart1Length = 0.3f
+                valueLinePart2Length = 0.3f
+                valueLineColor = textColor
+            }
 
             binding.pieChart.apply {
                 data = PieData(dataSet)
                 centerText = "Library\nBreakdown"
-                setCenterTextSize(16f)
+                setCenterTextSize(14f)
+                setCenterTextColor(textColor)
+                setHoleColor(Color.TRANSPARENT)
+                setTransparentCircleAlpha(0)
                 description.isEnabled = false
-                legend.isEnabled = false
+                legend.isEnabled = true
+                legend.textColor = textColor
+                setEntryLabelColor(textColor)
+                setEntryLabelTextSize(11f)
                 animateY(800)
                 invalidate()
             }

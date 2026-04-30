@@ -25,6 +25,7 @@
     <string name="time_watched_label">Total Time Watched</string>
     <string name="import_data_header">Import Data</string>
     <string name="import_button_label">Import from MAL</string>
+    <string name="import_trouble_hint">Trouble importing? MAL sometimes blocks API access. Try the XML export instead:</string>
     <string name="stat_watching">Watching</string>
     <string name="stat_completed">Completed</string>
     <string name="stat_on_hold">On-Hold</string>

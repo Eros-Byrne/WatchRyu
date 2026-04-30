@@ -54,6 +54,7 @@ class AnimeRepository(
     /**
      * Imports a user's MAL list using the Jikan API.
      * We wrapped this in a specific error handler to explain 404s.
+     * Jikan often returns 404 if MAL blocks the scraper, even for public lists.
      */
     suspend fun importMalList(username: String) = withContext(Dispatchers.IO) {
         try {
@@ -65,7 +66,7 @@ class AnimeRepository(
             }
         } catch (e: retrofit2.HttpException) {
             if (e.code() == 404) {
-                throw Exception("List for '$username' is private or not found on MAL.")
+                throw Exception("API Error: MAL blocked the import request. Please use the XML export method below instead.")
             }
             throw e
         }
