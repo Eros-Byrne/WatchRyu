@@ -66,6 +66,11 @@ class SettingsBottomSheet : BottomSheetDialogFragment() {
         binding.radioMedium.setOnClickListener { viewModel.setFontSize(1) }
         binding.radioLarge.setOnClickListener { viewModel.setFontSize(2) }
 
+        binding.btnRefreshMetadata.setOnClickListener {
+            viewModel.refreshAllMetadata()
+            dismiss()
+        }
+
         // Clear data logic
         binding.btnClearData.setOnClickListener {
             AlertDialog.Builder(requireContext())

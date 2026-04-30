@@ -35,4 +35,5 @@
     <string name="stat_total_entries">Total Entries</string>
     <string name="stat_rewatched">Rewatched</string>
     <string name="stat_episodes">Episodes</string>
+    <string name="refresh_metadata">Refresh All Metadata</string>
 </resources>

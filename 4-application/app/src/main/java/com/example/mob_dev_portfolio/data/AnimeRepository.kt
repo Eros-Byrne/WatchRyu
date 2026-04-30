@@ -14,42 +14,75 @@ import kotlinx.coroutines.withContext
  */
 class AnimeRepository(
     private val apiService: JikanApiService,
+    private val aniListService: AniListApiService,
     private val animeDao: AnimeDao,
     private val preferenceManager: PreferenceManager
 ) {
 
-    /**
-     * Fetches the official MAL genre list.
-     */
-    suspend fun getGenres(): List<GenreDto> {
-        val response = apiService.getGenres()
-        return response.data
-    }
+    private val aniListQuery = """
+        query (${'$'}search: String, ${'$'}season: MediaSeason, ${'$'}seasonYear: Int, ${'$'}sort: [MediaSort]) {
+          Page(page: 1, perPage: 25) {
+            media(search: ${'$'}search, season: ${'$'}season, seasonYear: ${'$'}seasonYear, sort: ${'$'}sort, type: ANIME) {
+              id
+              title { english romaji }
+              description
+              episodes
+              averageScore
+              coverImage { large }
+              siteUrl
+            }
+          }
+        }
+    """.trimIndent()
 
     /**
      * Advanced discovery search.
-     * Uses the general search endpoint to allow for genre and status filtering.
      */
     suspend fun searchAnime(
         query: String? = null,
         status: String? = null,
         genres: String? = null,
         orderBy: String? = null,
-        sort: String? = "desc"
+        sort: String? = null
     ): List<Anime> {
-        val response = apiService.searchAnime(query, status, genres, orderBy, sort)
-        return response.data.map { it.toDomainModel() }
+        return try {
+            val variables = mutableMapOf<String, Any>()
+            if (!query.isNullOrEmpty()) variables["search"] = query
+            variables["sort"] = listOf("POPULARITY_DESC")
+            
+            val request = AniListRequest(aniListQuery, variables)
+            val response = aniListService.getAnime(request)
+            response.data.page.media.map { it.toDomainModel() }
+        } catch (e: Exception) {
+            // Fallback to Jikan if AniList fails
+            val response = apiService.searchAnime(query, status, genres, orderBy, sort)
+            response.data?.map { it.toDomainModel() } ?: emptyList()
+        }
     }
 
     // Flow of all anime from the local database
     val allAnime: Flow<List<Anime>> = animeDao.getAllAnime().map { entities ->
         entities.map { it.toDomainModel() }
     }
+
+    /**
+     * Flow of the last updated timestamp from DataStore.
+     */
+    val lastUpdated: Flow<Long> = preferenceManager.lastUpdated
     // ... rest of existing methods ...
 
 
-    // Flow of last updated time from DataStore
-    val lastUpdated: Flow<Long> = preferenceManager.lastUpdated
+    /**
+     * Fetches the official MAL genre list.
+     */
+    suspend fun getGenres(): List<com.example.mob_dev_portfolio.model.GenreDto> {
+        return try {
+            val response = apiService.getGenres()
+            response.data ?: emptyList()
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 
     /**
      * Imports a user's MAL list using the Jikan API.
@@ -59,7 +92,7 @@ class AnimeRepository(
     suspend fun importMalList(username: String) = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getUserAnimeList(username, status = "all")
-            val domainList = response.data.map { it.toDomainModel() }
+            val domainList = response.data?.map { it.toDomainModel() } ?: emptyList()
             
             for (anime in domainList) {
                 animeDao.insertAnime(anime.toEntity())
@@ -82,29 +115,59 @@ class AnimeRepository(
     }
 
     /**
-     * Fetches top rated anime from the Jikan API.
+     * Fetches top rated anime.
      */
     suspend fun fetchTopAnime(): List<Anime> {
-        val response = apiService.getTopAnime()
-        return response.data.map { it.toDomainModel() }
+        return try {
+            val variables = mapOf("sort" to listOf("SCORE_DESC"))
+            val request = AniListRequest(aniListQuery, variables)
+            val response = aniListService.getAnime(request)
+            response.data.page.media.map { it.toDomainModel() }
+        } catch (e: Exception) {
+            val response = apiService.getTopAnime()
+            return response.data?.map { it.toDomainModel() } ?: emptyList()
+        }
     }
 
     /**
-     * Fetches seasonal anime from the Jikan API.
+     * Fetches seasonal anime.
      */
     suspend fun fetchSeasonalAnime(): List<Anime> {
-        val response = apiService.getSeasonalAnime()
-        val animeList = response.data.map { it.toDomainModel() }
-        preferenceManager.saveLastUpdated(System.currentTimeMillis())
-        return animeList
+        return try {
+            val variables = mapOf(
+                "season" to "WINTER", // Hardcoded for current season demo
+                "seasonYear" to 2025,
+                "sort" to listOf("POPULARITY_DESC")
+            )
+            val request = AniListRequest(aniListQuery, variables)
+            val response = aniListService.getAnime(request)
+            val animeList = response.data.page.media.map { it.toDomainModel() }
+            preferenceManager.saveLastUpdated(System.currentTimeMillis())
+            animeList
+        } catch (e: Exception) {
+            val response = apiService.getSeasonalAnime()
+            val animeList = response.data?.map { it.toDomainModel() } ?: emptyList()
+            preferenceManager.saveLastUpdated(System.currentTimeMillis())
+            return animeList
+        }
     }
 
     /**
-     * Fetches upcoming anime from the Jikan API.
+     * Fetches upcoming anime.
      */
     suspend fun fetchUpcomingAnime(): List<Anime> {
-        val response = apiService.getUpcomingAnime()
-        return response.data.map { it.toDomainModel() }
+        return try {
+            val variables = mapOf(
+                "status" to "NOT_YET_RELEASED",
+                "sort" to listOf("POPULARITY_DESC")
+            )
+            val request = AniListRequest(aniListQuery, variables)
+            val response = aniListService.getAnime(request)
+            response.data.page.media.map { it.toDomainModel() }
+        } catch (e: Exception) {
+            val response = apiService.getUpcomingAnime()
+            return response.data?.map { it.toDomainModel() } ?: emptyList()
+        }
     }
 
     /**
@@ -126,5 +189,17 @@ class AnimeRepository(
      */
     suspend fun deleteAnimeFromList(anime: Anime) {
         animeDao.deleteAnime(anime.toEntity())
+    }
+
+    /**
+     * Fetches fresh metadata for an anime by ID.
+     */
+    suspend fun refreshAnimeMetadata(id: Int): Anime? {
+        return try {
+            val response = apiService.getAnimeFullById(id)
+            response.data?.toDomainModel()
+        } catch (e: Exception) {
+            null
+        }
     }
 }

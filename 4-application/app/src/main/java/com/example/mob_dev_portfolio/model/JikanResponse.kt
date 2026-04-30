@@ -7,7 +7,11 @@ import com.google.gson.annotations.SerializedName
  * Jikan API v4 wraps results in a 'data' field.
  */
 data class JikanResponse(
-    @SerializedName("data") val data: List<AnimeDto>
+    @SerializedName("data") val data: List<AnimeDto>?
+)
+
+data class SingleAnimeResponse(
+    @SerializedName("data") val data: AnimeDto?
 )
 
 data class AnimeDto(
@@ -21,21 +25,25 @@ data class AnimeDto(
 )
 
 data class JikanImages(
-    @SerializedName("webp") val webp: JikanImageFormat
+    @SerializedName("webp") val webp: JikanImageFormat?,
+    @SerializedName("jpg") val jpg: JikanImageFormat?
 )
 
 data class JikanImageFormat(
-    @SerializedName("large_image_url") val largeImageUrl: String
+    @SerializedName("image_url") val imageUrl: String?,
+    @SerializedName("small_image_url") val smallImageUrl: String?,
+    @SerializedName("large_image_url") val largeImageUrl: String?
 )
 
 /**
  * Mapper extension function to convert API DTO to our internal domain model.
  */
 fun AnimeDto.toDomainModel(): Anime {
+    val imgUrl = images.webp?.largeImageUrl ?: images.webp?.imageUrl ?: images.jpg?.largeImageUrl ?: images.jpg?.imageUrl ?: ""
     return Anime(
         id = malId,
         title = title,
-        imageUrl = images.webp.largeImageUrl,
+        imageUrl = imgUrl,
         synopsis = synopsis ?: "No synopsis available.",
         malScore = score ?: 0.0,
         episodes = episodes ?: 0,

@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.mob_dev_portfolio.data.AniListApiService
 import com.example.mob_dev_portfolio.data.AnimeRepository
 import com.example.mob_dev_portfolio.data.AppDatabase
 import com.example.mob_dev_portfolio.data.JikanApiService
@@ -53,8 +54,9 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     init {
         val database = AppDatabase.getDatabase(application)
         val apiService = JikanApiService.create()
+        val aniListService = AniListApiService.create()
         preferenceManager = PreferenceManager(application)
-        repository = AnimeRepository(apiService, database.animeDao(), preferenceManager)
+        repository = AnimeRepository(apiService, aniListService, database.animeDao(), preferenceManager)
         
         favorites = repository.allAnime.asLiveData()
         lastUpdated = repository.lastUpdated.asLiveData()
@@ -108,6 +110,7 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun fetchTopAnime() {
+        android.util.Log.d("AnimeViewModel", "fetchTopAnime called")
         currentCategory = "top"
         viewModelScope.launch {
             try {
@@ -117,14 +120,21 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
                 } else {
                     repository.searchAnime(orderBy = "score", genres = selectedGenreId.toString())
                 }
+                android.util.Log.d("AnimeViewModel", "fetchTopAnime success: ${list.size} items")
+                if (list.isEmpty()) {
+                    importStatus.postValue("No results found or API error.")
+                }
                 animeList.postValue(list)
             } catch (e: Exception) {
-                e.printStackTrace()
+                android.util.Log.e("AnimeViewModel", "fetchTopAnime error", e)
+                importStatus.postValue("Error: ${e.localizedMessage}")
+                animeList.postValue(emptyList())
             }
         }
     }
 
     fun fetchSeasonalAnime() {
+        android.util.Log.d("AnimeViewModel", "fetchSeasonalAnime called")
         currentCategory = "seasonal"
         viewModelScope.launch {
             try {
@@ -134,14 +144,21 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
                 } else {
                     repository.searchAnime(status = "airing", genres = selectedGenreId.toString())
                 }
+                android.util.Log.d("AnimeViewModel", "fetchSeasonalAnime success: ${list.size} items")
+                if (list.isEmpty()) {
+                    importStatus.postValue("No results found for current season.")
+                }
                 animeList.postValue(list)
             } catch (e: Exception) {
-                e.printStackTrace()
+                android.util.Log.e("AnimeViewModel", "fetchSeasonalAnime error", e)
+                importStatus.postValue("Error: ${e.localizedMessage}")
+                animeList.postValue(emptyList())
             }
         }
     }
 
     fun fetchUpcomingAnime() {
+        android.util.Log.d("AnimeViewModel", "fetchUpcomingAnime called")
         currentCategory = "upcoming"
         viewModelScope.launch {
             try {
@@ -151,9 +168,15 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
                 } else {
                     repository.searchAnime(status = "upcoming", genres = selectedGenreId.toString())
                 }
+                android.util.Log.d("AnimeViewModel", "fetchUpcomingAnime success: ${list.size} items")
+                if (list.isEmpty()) {
+                    importStatus.postValue("No upcoming shows found.")
+                }
                 animeList.postValue(list)
             } catch (e: Exception) {
-                e.printStackTrace()
+                android.util.Log.e("AnimeViewModel", "fetchUpcomingAnime error", e)
+                importStatus.postValue("Error: ${e.localizedMessage}")
+                animeList.postValue(emptyList())
             }
         }
     }
@@ -177,5 +200,58 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun clearDatabase() {
         viewModelScope.launch { repository.clearDatabase() }
+    }
+
+    fun performSearch(query: String) {
+        currentCategory = "search"
+        viewModelScope.launch {
+            try {
+                animeList.postValue(emptyList())
+                val list = repository.searchAnime(query = query)
+                if (list.isEmpty()) {
+                    importStatus.postValue("No results found for '$query'")
+                }
+                animeList.postValue(list)
+            } catch (e: Exception) {
+                val errorMsg = if (e.localizedMessage?.contains("500") == true) {
+                    "API Server Error (500). MAL might be down or busy. Try again in a moment."
+                } else {
+                    "Search failed: ${e.localizedMessage}"
+                }
+                importStatus.postValue(errorMsg)
+            }
+        }
+    }
+
+    /**
+     * Refreshes metadata (like images) for all anime in the local list.
+     */
+    fun refreshAllMetadata() {
+        viewModelScope.launch {
+            importStatus.postValue("Refreshing metadata...")
+            val currentList = repository.allAnime.first()
+            var count = 0
+            for (anime in currentList) {
+                // If it's missing image or synopsis, refresh it
+                if (anime.imageUrl.isEmpty() || anime.synopsis.isEmpty()) {
+                    val fresh = repository.refreshAnimeMetadata(anime.id)
+                    if (fresh != null) {
+                        // Keep user's personal tracking data
+                        val updated = fresh.copy(
+                            episodesWatched = anime.episodesWatched,
+                            score = anime.score,
+                            status = anime.status,
+                            personalReview = anime.personalReview,
+                            rewatchCount = anime.rewatchCount
+                        )
+                        repository.updateAnimeInList(updated)
+                        count++
+                    }
+                    // Delay to avoid hitting rate limits (increase to 1s to be safe)
+                    kotlinx.coroutines.delay(1000)
+                }
+            }
+            importStatus.postValue("Refreshed $count shows!")
+        }
     }
 }

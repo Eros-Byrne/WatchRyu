@@ -8,6 +8,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import com.example.mob_dev_portfolio.R
 import com.example.mob_dev_portfolio.databinding.FragmentAiringBinding
 import com.example.mob_dev_portfolio.viewmodel.AnimeViewModel
@@ -37,6 +39,12 @@ class AiringFragment : Fragment() {
         setupFilters()
         observeGenres()
         observeViewModel()
+
+        // Ensure data is loaded if the list is currently empty
+        if (viewModel.animeList.value.isNullOrEmpty()) {
+            binding.progressBar.visibility = View.VISIBLE
+            viewModel.fetchSeasonalAnime()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -57,20 +65,30 @@ class AiringFragment : Fragment() {
 
     private fun setupSearch() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean = false
-            override fun onQueryTextChange(newText: String?): Boolean {
-                val currentList = viewModel.animeList.value ?: emptyList()
-                if (newText.isNullOrEmpty()) {
-                    adapter.submitList(currentList)
-                } else {
-                    val filtered = currentList.filter { 
-                        it.title.contains(newText, ignoreCase = true) 
-                    }
-                    adapter.submitList(filtered)
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (!query.isNullOrEmpty()) {
+                    binding.progressBar.visibility = View.VISIBLE
+                    viewModel.performSearch(query)
                 }
                 return true
             }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filterAndSubmitList(newText)
+                return true
+            }
         })
+    }
+
+    private fun filterAndSubmitList(query: String? = binding.searchView.query?.toString()) {
+        val currentList = viewModel.animeList.value ?: emptyList()
+        if (query.isNullOrEmpty()) {
+            adapter.submitList(currentList)
+        } else {
+            val filtered = currentList.filter { 
+                it.title.contains(query, ignoreCase = true) 
+            }
+            adapter.submitList(filtered)
+        }
     }
 
     private fun setupFilters() {
@@ -91,6 +109,7 @@ class AiringFragment : Fragment() {
      */
     private fun observeGenres() {
         viewModel.genres.observe(viewLifecycleOwner) { genreList ->
+            if (genreList == null) return@observe
             binding.genreChipGroup.removeAllViews()
             
             // Add an "All" chip
@@ -118,7 +137,7 @@ class AiringFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.animeList.observe(viewLifecycleOwner) { list ->
             binding.progressBar.visibility = View.GONE
-            adapter.submitList(list)
+            filterAndSubmitList()
         }
     }
 

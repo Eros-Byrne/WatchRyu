@@ -50,6 +50,8 @@ class AnimeAdapter(
 
             binding.animeImage.load(anime.imageUrl) {
                 crossfade(true)
+                placeholder(R.drawable.ic_launcher_background)
+                error(R.drawable.ic_launcher_background)
             }
 
             // Expansion logic
