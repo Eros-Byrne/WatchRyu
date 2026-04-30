@@ -20,6 +20,7 @@
     <string name="airing_label">Currently Airing</string>
     <string name="search_hint">Search seasonal anime...</string>
     <string name="time_spent_format">%1$d Days, %2$d Hours, %3$d Minutes</string>
+    <string name="default_time_spent">0 Days, 0 Hours, 0 Minutes</string>
     <string name="total_label">Total: %1$d</string>
     <string name="stats_header">Library Statistics</string>
     <string name="time_watched_label">Total Time Watched</string>
