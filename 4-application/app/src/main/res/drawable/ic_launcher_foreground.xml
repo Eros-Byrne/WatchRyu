@@ -1,16 +1,24 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Background Circle from the image -->
+    <path
+        android:fillColor="#001A11"
+        android:pathData="M54,10C30.14,10 10.86,29.28 10.86,53.14s19.28,43.14 43.14,43.14 43.14,-19.28 43.14,-43.14S77.86,10 54,10z" />
+
+    <!-- Stylized Green Dragon Symbol (WatchRyu) -->
     <path
         android:fillColor="#00FF88"
-        android:pathData="M54,20C35.22,20 20,35.22 20,54s15.22,34 34,34s34,-15.22 34,-34S72.78,20 54,20zM54,80C39.66,80 28,68.34 28,54s11.66,-26 26,-26s26,11.66 26,26S68.34,80 54,80z" />
+        android:pathData="M38.5,45c-2.48,0 -4.5,2.02 -4.5,4.5s2.02,4.5 4.5,4.5s4.5,-2.02 4.5,-4.5S40.98,45 38.5,45z M38.5,52c-1.38,0 -2.5,-1.12 -2.5,-2.5s1.12,-2.5 2.5,-2.5s2.5,1.12 2.5,2.5S39.88,52 38.5,52z" />
     <path
         android:fillColor="#00FF88"
-        android:pathData="M65,45c-2,0 -4,2 -4,4s2,4 4,4s4,-2 4,-4S67,45 65,45z" />
+        android:pathData="M65.5,35c-4.14,0 -7.5,3.36 -7.5,7.5s3.36,7.5 7.5,7.5s7.5,-3.36 7.5,-7.5S69.64,35 65.5,35z M65.5,48c-3.04,0 -5.5,-2.46 -5.5,-5.5s2.46,-5.5 5.5,-5.5s5.5,2.46 5.5,5.5S68.54,48 65.5,48z" />
     <path
         android:fillColor="#00FF88"
-        android:pathData="M45,35c-5,0 -10,5 -10,15c0,15 10,25 20,25s10,-5 10,-5s-5,0 -10,0s-10,-10 -10,-20C45,40 45,35 45,35z" />
+        android:pathData="M54,20c-18.78,0 -34,15.22 -34,34s15.22,34 34,34s34,-15.22 34,-34S72.78,20 54,20z M54,84.5c-16.82,0 -30.5,-13.68 -30.5,-30.5s13.68,-30.5 30.5,-30.5s30.5,13.68 30.5,30.5S70.82,84.5 54,84.5z" />
+    <path
+        android:fillColor="#00FF88"
+        android:pathData="M48,32c0,0 -8,5 -8,15c0,15 12,25 24,25s12,-5 12,-5s-5,0 -12,0s-15,-10 -15,-25c0,-5 -1,-10 -1,-10z" />
 </vector>

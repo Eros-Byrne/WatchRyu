@@ -30,17 +30,16 @@ class AnimeListFragment : Fragment() {
     // Exporter for single list (CSV)
     private val csvExporter = registerForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
         uri?.let {
-            try {
-                val outputStream = requireContext().contentResolver.openOutputStream(it)
-                val writer = OutputStreamWriter(outputStream)
-                // We observe the list from ViewModel then write it
-                viewModel.getAnimeByStatus(status).observe(viewLifecycleOwner) { list ->
+            viewModel.getAnimeByStatus(status).observe(viewLifecycleOwner) { list ->
+                try {
+                    val outputStream = requireContext().contentResolver.openOutputStream(uri)
+                    val writer = OutputStreamWriter(outputStream)
                     writer.write(ExportHelper.convertToCsv(list))
                     writer.close()
+                    Toast.makeText(context, "List exported as CSV!", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Export failed", Toast.LENGTH_SHORT).show()
                 }
-                Toast.makeText(context, "List exported as CSV!", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                Toast.makeText(context, "Export failed", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -64,7 +63,11 @@ class AnimeListFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = AnimeAdapter(
-            onTrackClick = { /* Open edit dialog */ },
+            onTrackClick = { anime -> 
+                TrackAnimeDialog(anime) { updated -> 
+                    viewModel.updateAnimeInList(updated)
+                }.show(childFragmentManager, "TrackDialog")
+            },
             onSaveReview = { anime, review -> 
                 val updatedAnime = anime.copy(personalReview = review)
                 viewModel.updateAnimeInList(updatedAnime)

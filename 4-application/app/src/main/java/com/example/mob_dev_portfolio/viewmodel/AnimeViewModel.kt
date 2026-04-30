@@ -80,12 +80,17 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     fun getAnimeByStatus(status: AnimeStatus): LiveData<List<Anime>> = 
         repository.getAnimeByStatus(status).asLiveData()
 
+    val importStatus = MutableLiveData<String>()
+
     fun importMalList(username: String) {
         viewModelScope.launch {
             try {
+                importStatus.postValue("Importing...")
                 repository.importMalList(username)
+                importStatus.postValue("Import successful!")
             } catch (e: Exception) {
                 e.printStackTrace()
+                importStatus.postValue("Import failed: ${e.localizedMessage}")
             }
         }
     }

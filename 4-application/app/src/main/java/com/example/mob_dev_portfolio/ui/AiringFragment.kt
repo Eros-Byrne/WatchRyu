@@ -41,7 +41,11 @@ class AiringFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = AnimeAdapter(
-            onTrackClick = { anime -> viewModel.updateAnimeInList(anime) },
+            onTrackClick = { anime -> 
+                TrackAnimeDialog(anime) { updated -> 
+                    viewModel.updateAnimeInList(updated)
+                }.show(childFragmentManager, "TrackDialog")
+            },
             onSaveReview = { anime, review -> 
                 val updatedAnime = anime.copy(personalReview = review)
                 viewModel.updateAnimeInList(updatedAnime)

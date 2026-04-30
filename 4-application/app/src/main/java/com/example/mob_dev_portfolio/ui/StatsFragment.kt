@@ -74,6 +74,13 @@ class StatsFragment : Fragment() {
         setupStatLabels()
         setupImportExport()
         observeStats()
+        observeImportStatus()
+    }
+
+    private fun observeImportStatus() {
+        viewModel.importStatus.observe(viewLifecycleOwner) { status ->
+            Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupStatLabels() {

@@ -43,7 +43,9 @@ interface JikanApiService {
 
     @GET("users/{username}/animelist")
     suspend fun getUserAnimeList(
-        @Path("username") username: String
+        @Path("username") username: String,
+        @Query("status") status: String = "all",
+        @Query("page") page: Int = 1
     ): UserAnimeListResponse
 
     companion object {

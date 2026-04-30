@@ -53,13 +53,21 @@ class AnimeRepository(
 
     /**
      * Imports a user's MAL list using the Jikan API.
+     * We wrapped this in a specific error handler to explain 404s.
      */
     suspend fun importMalList(username: String) = withContext(Dispatchers.IO) {
-        val response = apiService.getUserAnimeList(username)
-        val domainList = response.data.map { it.toDomainModel() }
-        
-        for (anime in domainList) {
-            animeDao.insertAnime(anime.toEntity())
+        try {
+            val response = apiService.getUserAnimeList(username, status = "all")
+            val domainList = response.data.map { it.toDomainModel() }
+            
+            for (anime in domainList) {
+                animeDao.insertAnime(anime.toEntity())
+            }
+        } catch (e: retrofit2.HttpException) {
+            if (e.code() == 404) {
+                throw Exception("List for '$username' is private or not found on MAL.")
+            }
+            throw e
         }
     }
 
