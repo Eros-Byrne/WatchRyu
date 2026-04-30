@@ -12,13 +12,14 @@ import com.example.mob_dev_portfolio.data.JikanApiService
 import com.example.mob_dev_portfolio.data.PreferenceManager
 import com.example.mob_dev_portfolio.model.Anime
 import com.example.mob_dev_portfolio.model.AnimeStatus
+import com.example.mob_dev_portfolio.model.GenreDto
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
  * ViewModel for WatchRyu.
- * Manages anime data and accessibility settings.
+ * Manages anime data, accessibility settings, and discovery filters.
  */
 class AnimeViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -29,13 +30,17 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     val favorites: LiveData<List<Anime>>
     val lastUpdated: LiveData<Long>
     
+    // Discovery & Filters
+    val genres = MutableLiveData<List<GenreDto>>()
+    var selectedGenreId: Int? = null
+    var currentCategory: String = "seasonal"
+
     val themeSelection: LiveData<Int>
     val contrastSetting: LiveData<Int>
     val fontSizeSetting: LiveData<Int>
 
     /**
      * Helper to get the synchronous state of a preference.
-     * This is useful for theme application in MainActivity's onCreate.
      */
     fun getInitialSettings(): Triple<Int, Int, Int> = runBlocking {
         Triple(
@@ -57,7 +62,19 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
         contrastSetting = preferenceManager.contrastSetting.asLiveData()
         fontSizeSetting = preferenceManager.fontSizeSetting.asLiveData()
 
+        fetchGenres()
         fetchSeasonalAnime()
+    }
+
+    private fun fetchGenres() {
+        viewModelScope.launch {
+            try {
+                val list = repository.getGenres()
+                genres.postValue(list)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     fun getAnimeByStatus(status: AnimeStatus): LiveData<List<Anime>> = 
@@ -86,11 +103,15 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun fetchTopAnime() {
+        currentCategory = "top"
         viewModelScope.launch {
             try {
-                // Clear current list to show loading
                 animeList.postValue(emptyList())
-                val list = repository.fetchTopAnime()
+                val list = if (selectedGenreId == null) {
+                    repository.fetchTopAnime()
+                } else {
+                    repository.searchAnime(orderBy = "score", genres = selectedGenreId.toString())
+                }
                 animeList.postValue(list)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -99,10 +120,15 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun fetchSeasonalAnime() {
+        currentCategory = "seasonal"
         viewModelScope.launch {
             try {
                 animeList.postValue(emptyList())
-                val list = repository.fetchSeasonalAnime()
+                val list = if (selectedGenreId == null) {
+                    repository.fetchSeasonalAnime()
+                } else {
+                    repository.searchAnime(status = "airing", genres = selectedGenreId.toString())
+                }
                 animeList.postValue(list)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -111,14 +137,28 @@ class AnimeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun fetchUpcomingAnime() {
+        currentCategory = "upcoming"
         viewModelScope.launch {
             try {
                 animeList.postValue(emptyList())
-                val list = repository.fetchUpcomingAnime()
+                val list = if (selectedGenreId == null) {
+                    repository.fetchUpcomingAnime()
+                } else {
+                    repository.searchAnime(status = "upcoming", genres = selectedGenreId.toString())
+                }
                 animeList.postValue(list)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    fun onGenreSelected(genreId: Int?) {
+        selectedGenreId = genreId
+        when (currentCategory) {
+            "top" -> fetchTopAnime()
+            "seasonal" -> fetchSeasonalAnime()
+            "upcoming" -> fetchUpcomingAnime()
         }
     }
 

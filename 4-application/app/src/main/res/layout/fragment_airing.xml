@@ -51,13 +51,32 @@
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
+    <!-- Genre Filter Chips -->
+    <HorizontalScrollView
+        android:id="@+id/genreScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/toggleGroup">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/genreChipGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="8dp"
+            app:singleLine="true"
+            app:singleSelection="true" />
+
+    </HorizontalScrollView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/airingRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toggleGroup"
+        app:layout_constraintTop_toBottomOf="@id/genreScrollView"
         tools:listitem="@layout/item_anime" />
 
     <ProgressBar

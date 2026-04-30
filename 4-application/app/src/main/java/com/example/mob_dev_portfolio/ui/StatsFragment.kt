@@ -6,19 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.mob_dev_portfolio.R
 import com.example.mob_dev_portfolio.databinding.FragmentStatsBinding
 import com.example.mob_dev_portfolio.model.AnimeStatus
+import com.example.mob_dev_portfolio.util.ExportHelper
+import com.example.mob_dev_portfolio.util.ImportHelper
 import com.example.mob_dev_portfolio.viewmodel.AnimeViewModel
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
+import java.io.OutputStreamWriter
 
 /**
- * Fragment that displays detailed user statistics and MAL import options.
+ * Fragment that displays detailed user statistics and MAL import/export options.
  */
 class StatsFragment : Fragment() {
 
@@ -26,6 +30,38 @@ class StatsFragment : Fragment() {
     private val binding get() = _binding!!
     
     private val viewModel: AnimeViewModel by activityViewModels()
+
+    // File picker for XML import
+    private val xmlPicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            try {
+                val inputStream = requireContext().contentResolver.openInputStream(it)
+                if (inputStream != null) {
+                    val list = ImportHelper.parseMalXml(inputStream)
+                    list.forEach { anime -> viewModel.updateAnimeInList(anime) }
+                    Toast.makeText(context, "Imported ${list.size} shows from XML", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "Error parsing XML file", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // Exporter for Full Account (XML)
+    private val accountExporter = registerForActivityResult(ActivityResultContracts.CreateDocument("text/xml")) { uri ->
+        uri?.let {
+            try {
+                val outputStream = requireContext().contentResolver.openOutputStream(it)
+                val writer = OutputStreamWriter(outputStream)
+                val currentList = viewModel.favorites.value ?: emptyList()
+                writer.write(ExportHelper.convertToMALXml(currentList))
+                writer.close()
+                Toast.makeText(context, "Account exported successfully!", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(context, "Export failed", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStatsBinding.inflate(inflater, container, false)
@@ -36,7 +72,7 @@ class StatsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         setupStatLabels()
-        setupImport()
+        setupImportExport()
         observeStats()
     }
 
@@ -51,7 +87,7 @@ class StatsFragment : Fragment() {
         binding.statEpisodes.statLabel.text = getString(R.string.stat_episodes)
     }
 
-    private fun setupImport() {
+    private fun setupImportExport() {
         binding.importButton.setOnClickListener {
             val username = binding.usernameInput.text.toString()
             if (username.isNotEmpty()) {
@@ -61,6 +97,14 @@ class StatsFragment : Fragment() {
             } else {
                 Toast.makeText(context, "Please enter a username", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.importXmlButton.setOnClickListener {
+            xmlPicker.launch("text/xml")
+        }
+
+        binding.exportAccountButton.setOnClickListener {
+            accountExporter.launch("WatchRyu_Account_Export.xml")
         }
     }
 

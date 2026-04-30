@@ -11,9 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mob_dev_portfolio.R
 import com.example.mob_dev_portfolio.databinding.FragmentAiringBinding
 import com.example.mob_dev_portfolio.viewmodel.AnimeViewModel
+import com.google.android.material.chip.Chip
 
 /**
- * Enhanced discovery fragment with search and upcoming filters.
+ * Enhanced discovery fragment with search, category toggles, and genre filters.
  */
 class AiringFragment : Fragment() {
 
@@ -34,6 +35,7 @@ class AiringFragment : Fragment() {
         setupRecyclerView()
         setupSearch()
         setupFilters()
+        observeGenres()
         observeViewModel()
     }
 
@@ -53,7 +55,6 @@ class AiringFragment : Fragment() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
             override fun onQueryTextChange(newText: String?): Boolean {
-                // Filter the current list in the adapter
                 val currentList = viewModel.animeList.value ?: emptyList()
                 if (newText.isNullOrEmpty()) {
                     adapter.submitList(currentList)
@@ -71,7 +72,6 @@ class AiringFragment : Fragment() {
     private fun setupFilters() {
         binding.toggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) {
-                // Show progress bar during fetch
                 binding.progressBar.visibility = View.VISIBLE
                 when (checkedId) {
                     R.id.btnTop -> viewModel.fetchTopAnime()
@@ -82,8 +82,36 @@ class AiringFragment : Fragment() {
         }
     }
 
+    /**
+     * Populates the ChipGroup with genres from the API.
+     */
+    private fun observeGenres() {
+        viewModel.genres.observe(viewLifecycleOwner) { genreList ->
+            binding.genreChipGroup.removeAllViews()
+            
+            // Add an "All" chip
+            val allChip = Chip(requireContext()).apply {
+                text = "All"
+                isCheckable = true
+                isChecked = true
+                id = View.generateViewId()
+                setOnClickListener { viewModel.onGenreSelected(null) }
+            }
+            binding.genreChipGroup.addView(allChip)
+
+            genreList.forEach { genre ->
+                val chip = Chip(requireContext()).apply {
+                    text = genre.name
+                    isCheckable = true
+                    id = View.generateViewId()
+                    setOnClickListener { viewModel.onGenreSelected(genre.id) }
+                }
+                binding.genreChipGroup.addView(chip)
+            }
+        }
+    }
+
     private fun observeViewModel() {
-        binding.progressBar.visibility = View.VISIBLE
         viewModel.animeList.observe(viewLifecycleOwner) { list ->
             binding.progressBar.visibility = View.GONE
             adapter.submitList(list)

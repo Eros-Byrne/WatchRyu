@@ -2,6 +2,7 @@ package com.example.mob_dev_portfolio.data
 
 import com.example.mob_dev_portfolio.model.Anime
 import com.example.mob_dev_portfolio.model.AnimeStatus
+import com.example.mob_dev_portfolio.model.GenreDto
 import com.example.mob_dev_portfolio.model.toDomainModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -17,10 +18,35 @@ class AnimeRepository(
     private val preferenceManager: PreferenceManager
 ) {
 
+    /**
+     * Fetches the official MAL genre list.
+     */
+    suspend fun getGenres(): List<GenreDto> {
+        val response = apiService.getGenres()
+        return response.data
+    }
+
+    /**
+     * Advanced discovery search.
+     * Uses the general search endpoint to allow for genre and status filtering.
+     */
+    suspend fun searchAnime(
+        query: String? = null,
+        status: String? = null,
+        genres: String? = null,
+        orderBy: String? = null,
+        sort: String? = "desc"
+    ): List<Anime> {
+        val response = apiService.searchAnime(query, status, genres, orderBy, sort)
+        return response.data.map { it.toDomainModel() }
+    }
+
     // Flow of all anime from the local database
     val allAnime: Flow<List<Anime>> = animeDao.getAllAnime().map { entities ->
         entities.map { it.toDomainModel() }
     }
+    // ... rest of existing methods ...
+
 
     // Flow of last updated time from DataStore
     val lastUpdated: Flow<Long> = preferenceManager.lastUpdated

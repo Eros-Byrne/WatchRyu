@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupNavigation() {
         val adapter = MainPagerAdapter(this)
         binding.viewPager.adapter = adapter
-        val tabTitles = listOf("Airing", "Stats", "Watching", "Completed", "Dropped", "Plan")
+        val tabTitles = listOf("Airing", "Stats", "Watching", "Completed", "On-Hold", "Dropped", "Plan")
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos -> tab.text = tabTitles[pos] }.attach()
     }
 

@@ -4,12 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mob_dev_portfolio.databinding.FragmentAnimeListBinding
 import com.example.mob_dev_portfolio.model.AnimeStatus
+import com.example.mob_dev_portfolio.util.ExportHelper
 import com.example.mob_dev_portfolio.viewmodel.AnimeViewModel
+import java.io.OutputStreamWriter
 
 /**
  * Fragment that displays a filtered list from the user's local database.
@@ -22,6 +26,24 @@ class AnimeListFragment : Fragment() {
     private val viewModel: AnimeViewModel by activityViewModels()
     private lateinit var adapter: AnimeAdapter
     private lateinit var status: AnimeStatus
+
+    // Exporter for single list (CSV)
+    private val csvExporter = registerForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
+        uri?.let {
+            try {
+                val outputStream = requireContext().contentResolver.openOutputStream(it)
+                val writer = OutputStreamWriter(outputStream)
+                // We observe the list from ViewModel then write it
+                viewModel.getAnimeByStatus(status).observe(viewLifecycleOwner) { list ->
+                    writer.write(ExportHelper.convertToCsv(list))
+                    writer.close()
+                }
+                Toast.makeText(context, "List exported as CSV!", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(context, "Export failed", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +58,7 @@ class AnimeListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        setupExport()
         observeViewModel()
     }
 
@@ -49,6 +72,12 @@ class AnimeListFragment : Fragment() {
         )
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
+    }
+
+    private fun setupExport() {
+        binding.exportButton.setOnClickListener {
+            csvExporter.launch("${status.name}_List.csv")
+        }
     }
 
     private fun observeViewModel() {

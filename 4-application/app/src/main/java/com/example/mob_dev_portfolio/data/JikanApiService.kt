@@ -1,5 +1,6 @@
 package com.example.mob_dev_portfolio.data
 
+import com.example.mob_dev_portfolio.model.GenreResponse
 import com.example.mob_dev_portfolio.model.JikanResponse
 import com.example.mob_dev_portfolio.model.UserAnimeListResponse
 import retrofit2.Retrofit
@@ -9,8 +10,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
- * Retrofit interface for the Jikan API (Unofficial MyAnimeList API).
- * This service allows us to fetch anime data without needing an API key.
+ * Retrofit interface for the Jikan API.
  */
 interface JikanApiService {
 
@@ -27,6 +27,18 @@ interface JikanApiService {
     @GET("seasons/upcoming")
     suspend fun getUpcomingAnime(
         @Query("page") page: Int = 1
+    ): JikanResponse
+
+    @GET("genres/anime")
+    suspend fun getGenres(): GenreResponse
+
+    @GET("anime")
+    suspend fun searchAnime(
+        @Query("q") query: String? = null,
+        @Query("status") status: String? = null,
+        @Query("genres") genres: String? = null,
+        @Query("order_by") orderBy: String? = null,
+        @Query("sort") sort: String? = null
     ): JikanResponse
 
     @GET("users/{username}/animelist")
