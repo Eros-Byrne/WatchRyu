@@ -1,4 +1,7 @@
-WatchRyu is a full-stack anime tracking web application that allows users to manage their personal anime watchlists entirely from their own machine — no accounts, no cloud, no subscriptions required. All data is stored in a local SQLite database, giving the user full ownership of their information.
+WatchRyu
+<img width="2072" height="1292" alt="image" src="https://github.com/user-attachments/assets/e9cd4944-9b28-421a-9d58-3ab202414710" />
+
+This app is a full-stack anime tracking web application that allows users to manage their personal anime watchlists entirely from their own machine — no accounts, no cloud, no subscriptions required. All data is stored in a local SQLite database, giving the user full ownership of their information.
 The application connects to the Jikan API (an unofficial MyAnimeList REST API) to pull live data such as currently airing shows, upcoming seasons, community ratings, and cover art. Users can also import an existing MyAnimeList account or upload a standard MAL XML export file to populate their library instantly.
 This project was built progressively as part of a student assignment, with features added across multiple development sessions.
 
